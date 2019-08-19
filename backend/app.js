@@ -4,12 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var accountRouter = require('./routes/account');
+const validateUser = require("./lib/auth");
 
 var app = express();
 
+app.set('secretKey', 'nodeRestApi'); // jwt secret token
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,9 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-
+app.use('/users', validateUser , usersRouter);
+app.use('/account',accountRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
