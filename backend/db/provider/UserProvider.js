@@ -15,6 +15,7 @@ var nodemailer = require('nodemailer');
 var generate = require('./genStr');
 var sha256 = require('js-sha256').sha256;
 var sendMail = require('./mail');
+const path = require("path");
 
 String.prototype.replaceAll = function (search, replacement) {
     var target = this;
@@ -29,6 +30,7 @@ class UserProvider {
         user.updated = new Date();
         user.isactive = false;
         user.isblock = false;
+        console.log(user);
         user.password = sha256(user.password);
         let _user = await Users.create(user).then(val => {
             return {
@@ -59,8 +61,9 @@ class UserProvider {
                 };
             })
             if (createKey.success) {
-                let url = config.web.protocal + "://" + config.web.host + (config.web.port !== null && config.web.port !== undefined) ? (":" + config.web.port) : ("") + "activeuser?key=" + active.key;
-                let template_html = fs.readFileSync("../../public/template/active-user/content.html", 'utf8');
+                let web_port = (config.web.port !== null && config.web.port !== undefined) ? (":" + config.web.port) : ("");
+                let url = config.web.protocal + "://" + config.web.host + web_port + "/activeuser?key=" + active.key;
+                let template_html = fs.readFileSync(path.resolve(__dirname, "../../public/template/active-user/content.html"), 'utf8');
                 template_html = template_html.replaceAll("{{name}}", _user.content.firstname + " " + _user.content.lastname);
                 template_html = template_html.replaceAll("{{action_url}}", url);
                 return await sendMail(active.email, "Kích hoạt tài khoản | Pidrun Team", "Kích hoạt tài khoản", template_html).then(() => {
@@ -72,10 +75,10 @@ class UserProvider {
         } else {
             return await _user;
         }
-
     }
 
     async activeUser(key) {
+        let current_dt = new Date();
         let find = await ActiveUser.findOne({
             "key": key
         }, (err, res) => {
@@ -88,17 +91,39 @@ class UserProvider {
         }).catch(err => {
             return {
                 success: false,
-                content: true
+                content: err
             }
         });
         if (find.content.success) {
-            return await Users.findByIdAndUpdate(find.content.content.UserId, {
-                "isactive": true
-            }, (err, res) => {}).then(() => {
-                return true
-            }).catch(err => {
-                return false
-            });
+            let max_time = find.content.updated.setMinutes(find.getMinutes() + 30);
+            if (current_dt >= find.content.updated && current_dt <= max_time) {
+                return await Users.findByIdAndUpdate(find.content.content.UserId, {
+                    "isactive": true
+                }, (err, res) => {}).then(() => {
+                    return {
+                        sucess: true,
+                        content: "Active user success"
+                    }
+                }).catch(err => {
+                    return {
+                        sucess: false,
+                        content: err
+                    }
+                });
+            } else {
+                await ActiveUser.findByIdAndDelete(find.content._id, (err, res) => {}).then(() => {
+                    return {
+                        sucess: false,
+                        content: "Active Time Out"
+                    }
+                }).catch(err => {
+                    return {
+                        sucess: false,
+                        content: err
+                    }
+                });
+            }
+
         } else {
             return await find;
         }
@@ -114,8 +139,9 @@ class UserProvider {
         return await Users.findOne({
             "email": email
         }, (err, res) => {
-            res.password = null;
-            console.log(res);
+            if (res !== null && res !== undefined) {
+                res.password = null;
+            }
             return res;
         });
     }
@@ -197,13 +223,15 @@ class UserProvider {
                 content: err
             }
         });
-        if(find.success)
-        {
-            let url = config.web.protocal + "://" + config.web.host + ((config.web.port !== null && config.web.port !== undefined) ? (":" + config.web.port) : ("") )+ "/activeuser?key=" + key;
-            console.log(url);
-            let _user = await Users.findOne({"email": email}).then(val => {return val});
-            console.log(_user);
-            var receiver = (_user.firstname !== null || _user.lastname !== null)?(_user.firstname + " " + _user.lastname):(_user.email);
+        if (find.success) {
+            let web_port = (config.web.port !== null && config.web.port !== undefined) ? (":" + config.web.port) : ("");
+            let url = config.web.protocal + "://" + config.web.host + web_port + "/activeuser?key=" + key;
+            let _user = await Users.findOne({
+                "email": email
+            }).then(val => {
+                return val
+            });
+            var receiver = (_user.firstname !== null || _user.lastname !== null) ? (_user.firstname + " " + _user.lastname) : (_user.email);
             let template_html = fs.readFileSync("../../public/template/active-user/content.html", 'utf8');
             template_html = template_html.replaceAll("{{name}}", receiver);
             template_html = template_html.replaceAll("{{action_url}}", url);
@@ -212,9 +240,7 @@ class UserProvider {
             }).catch(err => {
                 return false
             });
-        }
-        else
-        {
+        } else {
             return await find;
         }
     }
@@ -222,25 +248,25 @@ class UserProvider {
 
 module.exports = new UserProvider();
 
-try {
-    // var user = new Users();
-    // user.email = "davidarchuleta789@gmail.com";
-    // user.password = "abc@123";
-    // user.firstname = "Khải";
-    // user.lastname = "Đặng";
-    // user.birthday = new Date(1998, 12, 25);
-    var _provider = new UserProvider();
-    // let exc = _provider.registerUser(user);
-    // exc.then(val => {
-    //     console.log(val)
-    // }).catch(err => console.log(err));
-    // var x = _provider.login("davidarchuleta789@gmail.com", "abc@123");
-    var x = _provider.requestActive("davidarchuleta789@gmail.com");
-    x.then(val => {
-        console.log(val)
-    });
+// try {
+//     // var user = new Users();
+//     // user.email = "davidarchuleta789@gmail.com";
+//     // user.password = "abc@123";
+//     // user.firstname = "Khải";
+//     // user.lastname = "Đặng";
+//     // user.birthday = new Date(1998, 12, 25);
+//     var _provider = new UserProvider();
+//     // let exc = _provider.registerUser(user);
+//     // exc.then(val => {
+//     //     console.log(val)
+//     // }).catch(err => console.log(err));
+//     // var x = _provider.login("davidarchuleta789@gmail.com", "abc@123");
+//     var x = _provider.requestActive("davidarchuleta789@gmail.com");
+//     x.then(val => {
+//         console.log(val)
+//     });
 
-    // console.log(new UserProvider().getAllUser());
-} catch (error) {
-    console.log(error);
-}
+//     // console.log(new UserProvider().getAllUser());
+// } catch (error) {
+//     console.log(error);
+// }

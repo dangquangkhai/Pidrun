@@ -1,16 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let conversationSchema = new Schema({
-    title: {
-        type: String,
-        required: false
-    },
-    image:{
-        type: String,
-        required: false
-    },
-    creator: {
+let userKeySchema = new Schema({
+    UserId: {
         type: Schema.Types.ObjectId,
         required: true
     },
@@ -22,6 +14,15 @@ let conversationSchema = new Schema({
         type: Date,
         required: false
     },
+    publickey:{
+        type: String,
+        required: true
+    },
+    //Must encrypt private key
+    privatekey:{
+        type: String,
+        required: true
+    }
 });
 
-module.exports = mongoose.model("Conversation", conversationSchema);
+module.exports = mongoose.model("UserKey", userKeySchema);

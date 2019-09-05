@@ -11,6 +11,11 @@ web_host = {
     protocal:"http"
 }
 
+path_host = {
+    root : "D:\\Pidrun",
+    Con_Att : "D:\\Pidrun\\Converssation_Attachment"
+}
+
 module.exports = {
     email: email_server,
     web: web_host

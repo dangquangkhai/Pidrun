@@ -1,3 +1,4 @@
+
 <template>
   <div class="layout">
     <Navigation :path="selectPath" v-on:getmenu="getpath"></Navigation>
@@ -14,13 +15,16 @@
 </template>
 
 <script>
-var CONTROLLER = getApi();
+
 // @ is an alias to /src
 import Navigation from "@/components/navigation.vue";
 import Sidebar from "@/components/sidebar.vue";
 // import Addfriend from "@/components/addfriend.vue";
 import Chat from "@/components/chat.vue";
 import Axios from "axios";
+let api = require('../../../assets/js/host');
+
+var CONTROLLER = api.getApi();
 
 let LibUtils = require("../../../assets/js/LibUtils");
 

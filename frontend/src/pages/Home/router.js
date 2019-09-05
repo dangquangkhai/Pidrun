@@ -1,27 +1,32 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
-
+import {
+  TokenService
+} from '../../services/storage.service';
+let api = require('../../assets/js/host');
+import login_router from '../Login/router';
 Vue.use(Router);
 
-export default new Router({
+let home_router = new Router({
   mode: 'history',
   base: "/",
   routes: [{
       path: '/',
       name: 'home',
       component: Home,
+      alias: ['/home', "/home/index"]
     },
-    {
-      path: '/home',
-      name: 'home',
-      component: Home,
-    },
-    {
-      path: '/home/index',
-      name: 'home',
-      component: Home,
-    },
+    // {
+    //   path: '/home',
+    //   name: 'home',
+    //   component: Home,
+    // },
+    // {
+    //   path: '/home/index',
+    //   name: 'home',
+    //   component: Home,
+    // },
     // {
     //   path: '/about',
     //   name: 'about',
@@ -40,3 +45,5 @@ export default new Router({
     // },
   ],
 });
+
+export default home_router;

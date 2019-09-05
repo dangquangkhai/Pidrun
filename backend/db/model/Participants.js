@@ -10,9 +10,17 @@ let participantsSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
-    List_User:{
-        type: Object,
-        required: true
+    isDisabled:{
+        type: Boolean,
+        required: false
+    },
+    created: {
+        type: Date,
+        required: false
+    },
+    updated: {
+        type: Date,
+        required: false
     },
 });
 

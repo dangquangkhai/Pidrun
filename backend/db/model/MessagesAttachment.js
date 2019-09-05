@@ -6,6 +6,10 @@ let messagesAttachmentSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
+    MessageId: {
+        type: Schema.Types.ObjectId,
+        required: false
+    },
     attachmentName:{
         type: Schema.Types.ObjectId,
         required: true

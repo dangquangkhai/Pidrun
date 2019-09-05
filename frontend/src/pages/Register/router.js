@@ -4,7 +4,7 @@ import Register from './views/Register.vue';
 
 Vue.use(Router);
 
-export default new Router({
+let register_router = new Router({
   mode: 'history',
   base: "/",
   routes: [{
@@ -13,3 +13,6 @@ export default new Router({
     component: Register,
   }, ],
 });
+
+
+export default register_router;

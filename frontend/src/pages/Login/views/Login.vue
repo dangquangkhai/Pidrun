@@ -1,12 +1,12 @@
 <template>
-  <div class="layout">
+  <div class="layout" style="font-family: initial;">
     <!-- Start of Sign In -->
     <div class="main order-md-1">
       <div class="start">
         <div class="container">
           <div class="col-md-12">
             <div class="content">
-              <h1>Sign in to Swipe</h1>
+              <h1>Đăng nhập vào Pidrun App</h1>
               <div class="third-party">
                 <button class="btn item bg-blue">
                   <i class="material-icons">pages</i>
@@ -18,15 +18,16 @@
                   <i class="material-icons">whatshot</i>
                 </button>
               </div>
-              <p>or use your email account:</p>
+              <p>Đăng nhập bằng email:</p>
               <form>
                 <div class="form-group">
                   <input
                     type="email"
                     id="inputEmail"
                     class="form-control"
-                    placeholder="Email Address"
+                    placeholder="Email"
                     required
+                    v-model="form.email"
                   />
                   <button class="btn icon">
                     <i class="material-icons">mail_outline</i>
@@ -37,18 +38,23 @@
                     type="password"
                     id="inputPassword"
                     class="form-control"
-                    placeholder="Password"
+                    placeholder="Mật khẩu"
                     required
+                    v-model="form.pass"
                   />
                   <button class="btn icon">
                     <i class="material-icons">lock_outline</i>
                   </button>
                 </div>
-                <button type="submit" class="btn button" formaction="index-2.html">Sign In</button>
+                <div class="form-group">
+                  <p style="color: red;">{{login_error}}</p>
+                </div>
+                <button type="button" class="btn button" v-if="!disbleLogin" v-on:click="login()">Đăng nhập</button>
+                <button type="button" class="btn button" v-if="disbleLogin" v-on:click="login()" disabled>Đăng nhập</button>
                 <div class="callout">
                   <span>
-                    Don't have account?
-                    <a href="sign-up.html">Create Account</a>
+                    Chưa có tài khoản?
+                    <a href="#" v-on:click="register()">Đăng ký</a>
                   </span>
                 </div>
               </form>
@@ -63,9 +69,9 @@
       <div class="container">
         <div class="col-md-12">
           <div class="preference">
-            <h2>Hello, Friend!</h2>
-            <p>Enter your personal details and start your journey with Swipe today.</p>
-            <a href="sign-up.html" class="btn button">Sign Up</a>
+            <h2>Xin chào, bạn!</h2>
+            <p>Kết nói bạn bè thỏa sức trỏ chuyện.</p>
+            <a href="#" v-on:click="register()" class="btn button">Đăng ký</a>
           </div>
         </div>
       </div>
@@ -75,17 +81,52 @@
 </template>
 
 <script>
+import register_router from "../../Register/router";
+import home_router from "../../Home/router";
+import { TokenService } from "../../../services/storage.service";
+
 export default {
   name: "login",
   data() {
     return {
       form: {
-        user: null,
+        email: null,
         pass: null
-      }
+      },
+      LOGIN_CONTROLLER: this.$api.getApi() + "/account",
+      user_info: null,
+      login_error: null,
+      disbleLogin: false
     };
   },
-  mounted() {}
+  mounted() {},
+  methods: {
+    register: function() {
+      register_router.push({ name: "index" });
+      location.reload();
+    },
+    login: function() {
+      this.disbleLogin = true;
+      this.$http
+        .post(this.LOGIN_CONTROLLER + "/login", { user: this.form })
+        .then(val => {
+          if (val.data.success) {
+            this.login_error = null;
+            this.user_info = val.data.content.data.user;
+            TokenService.removeToken();
+            TokenService.removeRefreshToken();
+            TokenService.saveToken(val.data.content.data.token);
+            //TokenService.saveRefreshToken(response.data.refresh_token);
+            home_router.push({ name: "home" });
+            location.reload();
+          } else {
+            this.login_error = "Email hoặc mật khẩu không đúng";
+            this.disbleLogin = false;
+          }
+        })
+        .catch(err => {});
+    }
+  }
 };
 </script>
 

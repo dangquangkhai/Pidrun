@@ -22,6 +22,11 @@ let messagesSchema = new Schema({
         type: Date,
         required: false
     },
+    updated: {
+        type: Date,
+        required: false
+    },
+    
 });
 
 module.exports = mongoose.model("Messages", messagesSchema);
