@@ -48,9 +48,13 @@
                 </div>
                 <div class="form-group">
                   <p style="color: red;">{{login_error}}</p>
+                <div class="forget">
+                  <a href="#" v-on:click="forgetPass()" >Quên mật khẩu? Nhấp vào đây</a>
+                </div>
                 </div>
                 <button type="button" class="btn button" v-if="!disbleLogin" v-on:click="login()">Đăng nhập</button>
                 <button type="button" class="btn button" v-if="disbleLogin" v-on:click="login()" disabled>Đăng nhập</button>
+
                 <div class="callout">
                   <span>
                     Chưa có tài khoản?
@@ -84,6 +88,7 @@
 import register_router from "../../Register/router";
 import home_router from "../../Home/router";
 import { TokenService } from "../../../services/storage.service";
+import forget_router from "../../ForgetPass/router";
 
 export default {
   name: "login",
@@ -123,8 +128,13 @@ export default {
             this.login_error = "Email hoặc mật khẩu không đúng";
             this.disbleLogin = false;
           }
+
         })
         .catch(err => {});
+    },
+    forgetPass: function(){
+        forget_router.push({name: " forgetpass "});
+        location.reload();
     }
   }
 };

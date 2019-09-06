@@ -30,11 +30,11 @@ const config = {
 
 Vue.use(VeeValidate, config);
 
-let resgister_page = new Vue({
+let forget_page = new Vue({
   router,
   render: h => h(App),
 });
 
-resgister_page.$mount('#app');
+forget_page.$mount('#app');
 
-export default resgister_page;
+export default forget_page;

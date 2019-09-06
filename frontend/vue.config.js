@@ -46,5 +46,19 @@ module.exports = {
       // extracted common chunks and vendor chunks.
       chunks: ['chunk-vendors', 'chunk-common', 'register']
     },
+    forgetpass: {
+      // entry for the page
+      entry: './src/pages/ForgetPass/main.js',
+      // the source template
+      template: 'public/forgetpass.html',
+      // output as dist/index.html
+      filename: 'forgetpass.html',
+      // when using title option,
+      // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
+      title: 'Forget Password Page',
+      // chunks to include on this page, by default includes
+      // extracted common chunks and vendor chunks.
+      chunks: ['chunk-vendors', 'chunk-common', 'forgetpass']
+    },
   }
 }
