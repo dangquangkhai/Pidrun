@@ -10,7 +10,9 @@ router.post("/register", (req, res) => {
     try {
         let check_email = _provider.findUsrByEmail(user.email);
         check_email.then(val => {
-            console.log(val);
+            if (val !== null && val !== undefined) {
+                val.password = "";   
+            }
             if (val !== undefined && val !== null) {
                 return res.json({
                     success: false,
@@ -37,8 +39,9 @@ router.post("/register", (req, res) => {
 
 router.post("/login", (req, res) => {
     try {
-        var user = req.body.user;
-        var check = _provider.login(user.email, user.pass);
+        let user = req.body.user;
+        console.log(user);
+        let check = _provider.login(user.email, user.pass);
         check.then(val => {
             if (val.success) {
                 const token = jwt.sign({
@@ -84,6 +87,18 @@ router.post("/ActiveUser", (req, res) => {
     let key = req.body.key;
     _provider.requestActive(key).then(val => {
         return res.json(val)
+    }).catch(err => {
+        return res.json({
+            success: false,
+            content: err
+        });
+    })
+})
+
+router.post("/RequestActive",(req, res) => {
+    let email = req.body.email;
+    _provider.requestActive(email).then(val => {
+        return res.json(val);
     }).catch(err => {
         return res.json({
             success: false,

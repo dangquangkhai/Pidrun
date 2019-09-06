@@ -15,14 +15,13 @@
 </template>
 
 <script>
-
 // @ is an alias to /src
 import Navigation from "@/components/navigation.vue";
 import Sidebar from "@/components/sidebar.vue";
 // import Addfriend from "@/components/addfriend.vue";
 import Chat from "@/components/chat.vue";
 import Axios from "axios";
-let api = require('../../../assets/js/host');
+let api = require("../../../assets/js/host");
 
 var CONTROLLER = api.getApi();
 
@@ -38,7 +37,9 @@ export default {
   data() {
     return {
       selectPath: null,
-      SidebarKey: 0
+      SidebarKey: 0,
+      USR_CONTROLLER: this.$api.getApi() + "/users",
+      userinfo: null
     };
   },
   mounted() {
@@ -48,11 +49,7 @@ export default {
     if (LibUtils.LibUtils.isEmpty(CONTROLLER)) {
       console.log("Rỗng");
     }
-    Axios.get(this.$api.getApi() + "/api").then(res => {
-      if (!res.data.success) {
-        console.log("error");
-      }
-    });
+    this.getUsrInfo();
   },
   methods: {
     getpath: function(path) {
@@ -85,6 +82,27 @@ export default {
     },
     SidebarUpdate: function() {
       this.SidebarKey += 1;
+    },
+    getUsrInfo: function() {
+      console.log(true);
+      this.$http
+        .post(this.USR_CONTROLLER + "/userinfo")
+        .then(res => {
+          if (res.data.success) {
+            this.userinfo = res.data.content;
+            this.getUsrImg();
+          }
+        })
+        .catch();
+    },
+    getUsrImg: function() {
+      this.$http
+        .get(this.USR_CONTROLLER + "/getusrimage")
+        .then(res => {
+          this.userinfo.image = res.data;
+          console.log(res.data);
+        })
+        .catch();
     }
   }
 };

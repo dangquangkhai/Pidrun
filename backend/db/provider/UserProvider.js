@@ -139,20 +139,17 @@ class UserProvider {
         return await Users.findOne({
             "email": email
         }, (err, res) => {
-            if (res !== null && res !== undefined) {
-                res.password = null;
-            }
             return res;
         });
     }
     async findUsrById(id) {
         return await Users.findById(id, (err, res) => {
-            console.log(err);
             return res;
         })
     }
 
     async login(email, pass) {
+        console.log(pass);
         let find = await Users.findOne({
             "email": email
         }, (err, res) => {
@@ -236,9 +233,9 @@ class UserProvider {
             template_html = template_html.replaceAll("{{name}}", receiver);
             template_html = template_html.replaceAll("{{action_url}}", url);
             return await sendMail(email, "Kích hoạt tài khoản | Pidrun Team", "Kích hoạt tài khoản", template_html).then(() => {
-                return true
+                return {success:true, content:"Resend success"};
             }).catch(err => {
-                return false
+                return {success: false, content: "Resend unsuccess"};
             });
         } else {
             return await find;

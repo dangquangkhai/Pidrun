@@ -20,7 +20,7 @@
                   </button>
                 </div>
                 <p>Đăng Ký:</p>
-                <form class="signup">
+                <form class="signup" v-on:submit.prevent="register()">
                   <div class="form-group">
                     <input
                       type="email"
@@ -96,7 +96,7 @@
                       name="inputPassword"
                       class="form-control"
                       placeholder="Mật khẩu"
-                      required
+                      
                       v-model="form.password"
                       data-vv-as="password"
                       v-validate.continutes="'required|min:6'"
@@ -119,7 +119,7 @@
                       name="inputRePassword"
                       class="form-control"
                       placeholder="Nhập lại mật khẩu"
-                      required
+                      
                       v-model="form.repass"
                       data-vv-as="password confirmation"
                       v-validate="'required|confirmed:inputPassword'"
@@ -168,6 +168,7 @@
               <div class="content">
                 <h1>Tạo tài khoản thành công <i class="fa fa-check-circle" aria-hidden="true" style="color:green"></i></h1>
                 <h4>Kiểm tra hộp thư để kích hoạt tài khoản, nếu không có xin hãy check hộp thư spam</h4>
+                <h4>Nhấn vào <a href="#" v-on:click="login()" style="font-weight:1000">đây</a> để đăng nhập</h4>
               </div>
             </div>
           </div>
@@ -230,32 +231,33 @@ export default {
       location.reload();
     },
     register: function() {
-      this.$validator
-        .validateAll()
-        .then(res => {
-          if (res) {
-            this.disbleReg = true;
-            this.$http
-              .post(this.LOGIN_CONTROLLER + "/register", { user: this.form })
-              .then(val => {
-                if (val.data.success) {
-                  this.reg_error = null;
-                  this.regSuccess = true;
-                } else {
-                  //this.login_error = "Email hoặc mật khẩu không đúng";
-                  this.disbleReg = false;
-                  this.reg_error = val.data.content;
-                }
-              })
-              .catch(err => {
-                this.reg_error = err;
-                this.disbleReg - false;
-              });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.regSuccess = true;
+      // this.$validator
+      //   .validateAll()
+      //   .then(res => {
+      //     if (res) {
+      //       this.disbleReg = true;
+      //       this.$http
+      //         .post(this.LOGIN_CONTROLLER + "/register", { user: this.form })
+      //         .then(val => {
+      //           if (val.data.success) {
+      //             this.reg_error = null;
+      //             this.regSuccess = true;
+      //           } else {
+      //             //this.login_error = "Email hoặc mật khẩu không đúng";
+      //             this.disbleReg = false;
+      //             this.reg_error = val.data.content;
+      //           }
+      //         })
+      //         .catch(err => {
+      //           this.reg_error = err;
+      //           this.disbleReg - false;
+      //         });
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //   });
     }
   }
 };

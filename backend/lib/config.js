@@ -13,10 +13,12 @@ web_host = {
 
 path_host = {
     root : "D:\\Pidrun",
-    Con_Att : "D:\\Pidrun\\Converssation_Attachment"
+    Con_Att : "D:\\Pidrun\\Converssation_Attachment",
+    Img_Att : "D:\\Pidrun\\User_Image"
 }
 
 module.exports = {
     email: email_server,
-    web: web_host
+    web: web_host,
+    server_path: path_host
 }
