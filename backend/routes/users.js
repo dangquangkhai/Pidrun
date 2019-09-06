@@ -47,6 +47,8 @@ router.get("/getusrimage", (req, res, next) => {
           res.sendFile(val);
         }).catch(err => {
           res.send("");
+
+          
         })
       }
       else{
