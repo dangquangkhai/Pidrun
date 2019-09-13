@@ -52,14 +52,7 @@ router.get("/getusrimage", (req, res, next) => {
         })
       }
       else{
-        console.log("Default");
-        fs.readFile(path.resolve(__dirname, "../public/images/default-avatar.jpg"), (err, data) => {
-          return data;
-        }).then(val => {
-          res.sendFile(val);
-        }).catch(err => {
-          res.send("");
-        })
+        res.sendFile(path.resolve(__dirname, "../public/images/") + "/default-avatar.jpg");
       }
     }
     else

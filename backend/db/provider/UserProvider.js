@@ -241,6 +241,12 @@ class UserProvider {
             return await find;
         }
     }
+
+    //Request Add friend
+    async reqAddFriend(id){
+        
+    }
+
 }
 
 module.exports = new UserProvider();

@@ -153,9 +153,20 @@ class ConversationProvider {
         return await memInfo;
     }
 
-    async SendMessage()
+    async SendMessage(ConId, UserId, Mess, Attachment)
     {
-        
+        let mess = new Messsages();
+        mess.ConversationId = ConId;
+        mess.SenderId = UserId;
+        mess.message = Mess;
+        mess.created = new Date();
+        mess.updated = new Data();
+        Messsages.create(mess); 
+        //  if (Attachment.length < 0) {
+     
+        //  }
+        return await new Object({success: true, content: ""}); 
     }
+
 
 }
