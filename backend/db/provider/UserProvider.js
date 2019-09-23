@@ -336,56 +336,51 @@ class UserProvider {
     return await new Object({ success: true, content: "" });
   }
 
-  async getContact(UserId) {
-    let lstContact = UserContact.find({ UserId: UserId }, (err, res) => {
-      if (err !== null && err !== undefined) {
-        console.log(err);
-      }
-      return res;
-    })
-      // .skip(20)
-      // .limit(10)
-      .then(val => {
-        return { success: true, content: val };
-      })
-      .catch(err => {
-        return { success: false, content: err };
-      });
-    return await lstContact.then(val => {
-      if (val.success) {
-        let arr = [];
-        let lstInfo = [];
-        val.content.forEach(item => {
-          arr.push(item.ContactId);
-          lstInfo.push(item);
-        });
+  async returnObj(Obj) {
+    console.log(Obj);
+    return await Obj;
+  }
 
-        //let func = function getInfo(id)
-        return Users.find()
+  async getContact(UserId, NextUsrId = null, Length = 20, callback) {
+    if (Length > 20) {
+      return await new Object({
+        success: false,
+        content: "Maximum length users"
+      });
+    }
+    if (NextUsrId == null || NextUsrId == undefined) {
+      let lstIdContact = await UserContact.find({ UserId: UserId })
+        .limit(Length)
+        .then(val => {
+          let lstId = [];
+          val.forEach((item, index) => {
+            lstId.push(item.ContactId);
+          });
+          return { success: true, content: lstId };
+        });
+      if (lstIdContact.success) {
+        let arr = lstIdContact.content;
+        let _this = this;
+        await Users.find()
           .where("_id")
           .in(arr)
           .exec((err, res) => {
-            res.forEach((item, index) => {
-              lstInfo[index].info = new Object({
+            let arr = res;
+            let lstUsr = [];
+            let jsonArray = JSON.parse(JSON.stringify(arr));
+            jsonArray.forEach((item, index) => {
+              let info = new Object({
+                _id: item._id,
                 firstname: item.firstname,
                 lastname: item.lastname,
                 email: item.email
               });
+              lstUsr.push(info);
             });
-            return lstInfo;
+            callback(new Object({ success: true, content: lstUsr }));
           });
-        // .then(val => {
-        //   val.forEach((item, index) => {
-        //     lstInfo[index].info = new Object({
-        //       firstname: item.firstname,
-        //       lastname: item.lastname,
-        //       email: item.email
-        //     });
-        //   });
-        //   console.log(lstInfo);
-        // });
-      } else return lstContact;
-    });
+      }
+    }
   }
 }
 
@@ -409,8 +404,8 @@ try {
   //     console.log(val);
   //   });
   // console.log(new UserProvider().getAllUser());
-  _provider.getContact("5d708885f5c4952698cdd075").then(val => {
-    console.log("Ob:" + val);
+  _provider.getContact("5d51347486f7b41cbc039314", null, 10, function(Obj) {
+    console.log(Obj);
   });
   //console.log(num);
 } catch (error) {

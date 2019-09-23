@@ -250,14 +250,27 @@ function convertDate(date) {
 }
 
 let _provider = new ConversationProvider();
-_provider.getMessage("5d82188f146e1954508b9b2c", null, 10).then(val => {
-  if (!val.success) {
-    console.log(val.content);
-    return;
-  }
-  let arr = val.content;
-  jsonArray = JSON.parse(JSON.stringify(arr));
-  jsonArray.forEach((item, index) => {
-    console.log(item._id + " Date: " + convertDate(item.created));
+// Participants.deleteOne({ _id: "5d82188f146e1954508b9b2d" }).then(val =>
+//   console.log(val)
+// );
+// _provider.getMessage("5d82188f146e1954508b9b2c", null, 10).then(val => {
+//   if (!val.success) {
+//     console.log(val.content);
+//     return;
+//   }
+//   let arr = val.content;
+//   jsonArray = JSON.parse(JSON.stringify(arr));
+//   jsonArray.forEach((item, index) => {
+//     console.log(item._id + " Date: " + convertDate(item.created));
+//   });
+// });
+
+_provider
+  .createCnver(
+    "",
+    ["5d51347486f7b41cbc039314", "5d708885f5c4952698cdd075"],
+    "5d51347486f7b41cbc039314"
+  )
+  .then(val => {
+    console.log(val);
   });
-});
