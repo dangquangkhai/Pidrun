@@ -227,6 +227,34 @@ class ConversationProvider {
         return { success: false, content: val };
       });
   }
+  async getLatestMs(UserId, NextId = null, Length = 20, callback) {
+    if (Length > 20) {
+      return await new Object({
+        success: false,
+        content: "Maximum length message"
+      });
+    }
+    let mess = [];
+    let conId = [];
+    if (NextId == null || NextId == undefined) {
+      conId = await Participants.find({ UserId: UserId }, (err, res) => {
+        let lstIdCon = [];
+        res.forEach((item, index) => {
+          lstIdCon.push(ConversationId);
+        });
+      })
+        .then(val => {
+          return { success: true, content: val };
+        })
+        .catch(err => {
+          return { success: false, content: err };
+        });
+      if (conId.success) {
+        let arrId = conId.val;
+      }
+      return { success: false, content: "something wrong!!!" };
+    }
+  }
 }
 
 function convertDate(date) {
@@ -253,24 +281,33 @@ let _provider = new ConversationProvider();
 // Participants.deleteOne({ _id: "5d82188f146e1954508b9b2d" }).then(val =>
 //   console.log(val)
 // );
-// _provider.getMessage("5d82188f146e1954508b9b2c", null, 10).then(val => {
-//   if (!val.success) {
-//     console.log(val.content);
-//     return;
-//   }
-//   let arr = val.content;
-//   jsonArray = JSON.parse(JSON.stringify(arr));
-//   jsonArray.forEach((item, index) => {
-//     console.log(item._id + " Date: " + convertDate(item.created));
-//   });
-// });
-
-_provider
-  .createCnver(
-    "",
-    ["5d51347486f7b41cbc039314", "5d708885f5c4952698cdd075"],
-    "5d51347486f7b41cbc039314"
-  )
-  .then(val => {
-    console.log(val);
+_provider.getMessage("5d836eb86408de44c79391f2", null, 10).then(val => {
+  if (!val.success) {
+    console.log(val.content);
+    return;
+  }
+  let arr = val.content;
+  jsonArray = JSON.parse(JSON.stringify(arr));
+  jsonArray.forEach((item, index) => {
+    console.log(item._id + " Date: " + convertDate(item.created));
   });
+});
+
+// _provider
+//   .createCnver(
+//     "",
+//     ["5d51347486f7b41cbc039314", "5d708885f5c4952698cdd075"],
+//     "5d51347486f7b41cbc039314"
+//   )
+//   .then(val => {
+//     console.log(val);
+//   });
+// _provider
+//   .SendMessage(
+//     "5d836eb86408de44c79391f2",
+//     "5d51347486f7b41cbc039314",
+//     "Hello AAA"
+//   )
+//   .then(val => {
+//     console.log(val);
+//   });
