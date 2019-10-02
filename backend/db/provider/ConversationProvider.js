@@ -22,6 +22,8 @@ class ConversationProvider {
     conVer.creator = UserId;
     conVer.created = new Date();
     conVer.updated = new Date();
+    conVer.lastMessageId = null;
+    conVer.lastMessageTime = new Date();
     let create = await Conversation.create(conVer)
       .then(val => {
         return {
@@ -191,11 +193,28 @@ class ConversationProvider {
     mess.message = Mess;
     mess.created = new Date();
     mess.updated = new Date();
-    Messsages.create(mess);
+    return await Messsages.create(mess).then(async val => {
+      let query = await Conversation.findByIdAndUpdate(ConId, {
+        lastMessageTime: new Date(),
+        lastMessageId: val._id
+      })
+        .then(val => {
+          return { success: true, content: val };
+        })
+        .catch(err => {
+          {
+            return { success: true, content: err };
+          }
+        });
+      if (query.success) {
+        return { success: true, content: "Create sucess" };
+      }
+      return { success: false, content: query.content };
+    });
+
     //  if (Attachment.length < 0) {
 
     //  }
-    return await new Object({ success: true, content: "" });
   }
 
   //Get message of conversation
@@ -227,33 +246,133 @@ class ConversationProvider {
         return { success: false, content: val };
       });
   }
-  async getLatestMs(UserId, NextId = null, Length = 20, callback) {
+  async getConv(UserId, NextId = null, Length = 20, callback) {
     if (Length > 20) {
-      return await new Object({
+      callback({
         success: false,
         content: "Maximum length message"
       });
+      return;
     }
     let mess = [];
     let conId = [];
-    if (NextId == null || NextId == undefined) {
-      conId = await Participants.find({ UserId: UserId }, (err, res) => {
-        let lstIdCon = [];
-        res.forEach((item, index) => {
-          lstIdCon.push(ConversationId);
+    let lstIdCon = await Participants.find({ UserId: UserId }, (err, res) => {
+      console.log(err);
+    })
+      .select("ConversationId")
+      .then(val => {
+        let listId = [];
+        val.forEach((item, index) => {
+          listId.push(item.ConversationId);
         });
+        return { success: true, content: listId };
       })
-        .then(val => {
-          return { success: true, content: val };
-        })
-        .catch(err => {
-          return { success: false, content: err };
-        });
-      if (conId.success) {
-        let arrId = conId.val;
+      .catch(err => {
+        return { success: false, content: err };
+      });
+    //Get first 20 conversations recently chat
+    if (NextId == null || NextId == undefined) {
+      //console.log(lstIdCon);
+      if (lstIdCon.success) {
+        await Conversation.where({ _id: { $in: lstIdCon.content } })
+          .sort({ lastMessageTime: "desc" })
+          .limit(Length)
+          .exec(async (err, res) => {
+            let messId = [];
+            res.forEach((item, index) => {
+              messId.push(item.lastMessageId);
+            });
+            let lstMess = await Messsages.find({ _id: { $in: messId } })
+              .then(val => {
+                return val;
+              })
+              .catch(err => {
+                return false;
+              });
+            if (lstMess != false) {
+              for (let i = 0; i < res.length; i++) {
+                res[i].mess = lstMess.find((val, index) => {
+                  return (
+                    JSON.stringify(res[i]._id) ==
+                    JSON.stringify(val.ConversationId)
+                  );
+                });
+              }
+              //console.log(res);
+              callback(res);
+            } else {
+              callback(
+                new Object({
+                  success: false,
+                  content: "Some thing wrong happen"
+                })
+              );
+            }
+          });
+        return;
       }
-      return { success: false, content: "something wrong!!!" };
+      callback(
+        new Object({
+          success: false,
+          content: "Don't have any conversation"
+        })
+      );
+      return;
     }
+    //Get next 20 conversations recently chat
+    console.log(NextId);
+    await Conversation.where({ _id: { $in: lstIdCon.content } })
+      .sort({ lastMessageTime: "desc" })
+      //.where({ _id: { $gt: NextId } })
+      //.limit(Length)
+      .select("_id")
+      .exec(async (err, res) => {
+        let arrConId = [];
+        res.forEach((item, index) => {
+          arrConId.push(item._id);
+        });
+        let to = arrConId.findIndex(val => {
+          return JSON.stringify(val) == JSON.stringify(NextId);
+        });
+        arrConId.splice(0, to + 1);
+        await Conversation.where({ _id: { $in: arrConId } })
+          .sort({
+            lastMessageTime: "desc"
+          })
+          .limit(Length)
+          .exec(async (err, res) => {
+            let messId = [];
+            res.forEach((item, index) => {
+              messId.push(item.lastMessageId);
+            });
+            let lstMess = await Messsages.find({ _id: { $in: messId } })
+              .then(val => {
+                return val;
+              })
+              .catch(err => {
+                return false;
+              });
+            if (lstMess != false) {
+              for (let i = 0; i < res.length; i++) {
+                res[i].mess = lstMess.find((val, index) => {
+                  return (
+                    JSON.stringify(res[i]._id) ==
+                    JSON.stringify(val.ConversationId)
+                  );
+                });
+              }
+              //console.log(res);
+              callback(res);
+            } else {
+              callback(
+                new Object({
+                  success: false,
+                  content: "Some thing wrong happen"
+                })
+              );
+            }
+          });
+      });
   }
 }
 
@@ -281,32 +400,39 @@ let _provider = new ConversationProvider();
 // Participants.deleteOne({ _id: "5d82188f146e1954508b9b2d" }).then(val =>
 //   console.log(val)
 // );
-_provider.getMessage("5d836eb86408de44c79391f2", null, 10).then(val => {
-  if (!val.success) {
-    console.log(val.content);
-    return;
-  }
-  let arr = val.content;
-  jsonArray = JSON.parse(JSON.stringify(arr));
-  jsonArray.forEach((item, index) => {
-    console.log(item._id + " Date: " + convertDate(item.created));
-  });
-});
-
-// _provider
-//   .createCnver(
-//     "",
-//     ["5d51347486f7b41cbc039314", "5d708885f5c4952698cdd075"],
-//     "5d51347486f7b41cbc039314"
-//   )
-//   .then(val => {
-//     console.log(val);
+// _provider.getMessage("5d836eb86408de44c79391f2", null, 10).then(val => {
+//   if (!val.success) {
+//     console.log(val.content);
+//     return;
+//   }
+//   let arr = val.content;
+//   jsonArray = JSON.parse(JSON.stringify(arr));
+//   jsonArray.forEach((item, index) => {
+//     console.log(item._id + " Date: " + convertDate(item.created));
 //   });
+// });
 // _provider
 //   .SendMessage(
 //     "5d836eb86408de44c79391f2",
 //     "5d51347486f7b41cbc039314",
-//     "Hello AAA"
+//     "Hello anh da den"
+//   )
+//   .then(val => {
+//     console.log(val);
+//   });
+// _provider.getConv("5d51347486f7b41cbc039314", null, 20, val => {
+//   val.forEach((val, index) => {
+//     console.log(
+//       val._id + " " + convertDate(val.lastMessageTime) + " " + val.mess.message
+//     );
+//   });
+// });
+
+// _provider
+//   .SendMessage(
+//     "5d9469086b8ed33aa3068652c",
+//     "5d51347486f7b41cbc039314",
+//     "Hello AAA AAA 11.1"
 //   )
 //   .then(val => {
 //     console.log(val);

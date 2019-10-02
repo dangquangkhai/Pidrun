@@ -409,6 +409,67 @@ class UserProvider {
       callback(lstIdContact);
     }
   }
+
+  async searchUser(keyword, Length = 20) {
+    return await Users.aggregate(
+      [
+        {
+          $project: {
+            fullname: { $concat: ["$firstname", " ", "$lastname"] },
+            email: "$email",
+            firstname: "$firstname",
+            lastname: "$lastname"
+          }
+        },
+        // Match first to reduce documents to those where the array contains the match
+        {
+          $match: {
+            $or: [
+              {
+                fullname: { $regex: keyword, $options: "i" }
+              },
+              {
+                email: { $regex: keyword, $options: "i" }
+              }
+            ]
+          }
+        },
+
+        // Unwind to "de-normalize" the document per array element
+        { $unwind: "$fullname" },
+        { $unwind: "$email" },
+
+        // Now filter those document for the elements that match
+        {
+          $match: {
+            $or: [
+              {
+                fullname: { $regex: keyword, $options: "i" }
+              },
+              {
+                email: { $regex: keyword, $options: "i" }
+              }
+            ]
+          }
+        },
+        // Group back as an array with only the matching elements
+        {
+          $group: {
+            _id: "$_id",
+            email: { $first: "$email" },
+            firstname: { $first: "$firstname" },
+            lastname: { $first: "$lastname" }
+            // title: { $first: "$title" },
+            // authors: { $push: "$authors" },
+            // subjects: { $first: "$subjects" }
+          }
+        }
+      ],
+      (err, val) => {
+        console.log(val);
+      }
+    );
+  }
 }
 
 module.exports = new UserProvider();
@@ -421,6 +482,9 @@ try {
   // user.lastname = "Đặng";
   // user.birthday = new Date(1998, 12, 25);
   var _provider = new UserProvider();
+  _provider.searchUser("Pidrun").then(val => {
+    console.log(val);
+  });
   // let exc = _provider.registerUser(user);
   // exc.then(val => {
   //     console.log(val)
