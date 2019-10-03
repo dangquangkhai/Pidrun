@@ -20,6 +20,11 @@ path_host = {
   Img_Att: "D:\\Pidrun\\User_Image"
 };
 
+//MongoDB account
+mongodb_url = {
+  path: "mongodb://127.0.0.1/Pidrun"
+};
+
 //Unix, linux or freebsd host
 unix_path_host = {
   root: "/home/" + os.userInfo().username + "/Pidrun",
@@ -72,7 +77,8 @@ module.exports = {
   web: web_host,
   server_path: path_host,
   getHost: getHost,
-  validAllHost: validAllHost
+  validAllHost: validAllHost,
+  mongodb_url: mongodb_url
 };
 
 // console.log(getHost("root"));

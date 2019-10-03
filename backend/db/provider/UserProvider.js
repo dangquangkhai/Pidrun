@@ -481,10 +481,10 @@ try {
   // user.firstname = "Khải";
   // user.lastname = "Đặng";
   // user.birthday = new Date(1998, 12, 25);
-  var _provider = new UserProvider();
-  _provider.searchUser("Pidrun").then(val => {
-    console.log(val);
-  });
+  // var _provider = new UserProvider();
+  // _provider.searchUser("Pidrun").then(val => {
+  //   console.log(val);
+  // });
   // let exc = _provider.registerUser(user);
   // exc.then(val => {
   //     console.log(val)

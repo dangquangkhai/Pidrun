@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const custom_config = require("../../lib/config");
 mongoose.set("useCreateIndex", true);
-mongoose.connect("mongodb://127.0.0.1/Pidrun", {
+mongoose.connect(custom_config.mongodb_url.path, {
   useNewUrlParser: true
 });
 var db = mongoose.connection;
@@ -320,7 +321,6 @@ class ConversationProvider {
       return;
     }
     //Get next 20 conversations recently chat
-    console.log(NextId);
     await Conversation.where({ _id: { $in: lstIdCon.content } })
       .sort({ lastMessageTime: "desc" })
       //.where({ _id: { $gt: NextId } })
@@ -420,13 +420,13 @@ let _provider = new ConversationProvider();
 //   .then(val => {
 //     console.log(val);
 //   });
-// _provider.getConv("5d51347486f7b41cbc039314", null, 20, val => {
-//   val.forEach((val, index) => {
-//     console.log(
-//       val._id + " " + convertDate(val.lastMessageTime) + " " + val.mess.message
-//     );
-//   });
-// });
+_provider.getConv("5d51347486f7b41cbc039314", null, 20, val => {
+  val.forEach((val, index) => {
+    console.log(
+      val._id + " " + convertDate(val.lastMessageTime) + " " + val.mess.message
+    );
+  });
+});
 
 // _provider
 //   .SendMessage(
