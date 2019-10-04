@@ -7,10 +7,12 @@
       :name="selectPath"
       :keysidebar="SidebarKey"
       v-on:resetkeybar="SidebarKey = 0"
+      v-on:getsetting="getName"
     ></Sidebar>
     <!-- <Sidebar></Sidebar>
     <Addfriend></Addfriend>-->
     <Chat></Chat>
+    <ComponentSet :settingmenu="stringSetting"></ComponentSet>
   </div>
 </template>
 
@@ -20,6 +22,7 @@ import Navigation from "@/components/navigation.vue";
 import Sidebar from "@/components/sidebar.vue";
 // import Addfriend from "@/components/addfriend.vue";
 import Chat from "@/components/chat.vue";
+import ComponentSet from "@/components/componentset.vue";
 import Axios from "axios";
 let api = require("../../../assets/js/host");
 
@@ -32,14 +35,16 @@ export default {
   components: {
     Navigation,
     Sidebar,
-    Chat
+    Chat,
+    ComponentSet
   },
   data() {
     return {
       selectPath: null,
       SidebarKey: 0,
       USR_CONTROLLER: this.$api.getApi() + "/users",
-      userinfo: null
+      userinfo: null,
+      stringSetting:null,
     };
   },
   mounted() {
@@ -103,6 +108,10 @@ export default {
           console.log(res.data);
         })
         .catch();
+    },
+    getName: function(val) {
+      this.stringSetting = val;
+
     }
   }
 };

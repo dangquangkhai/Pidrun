@@ -74,7 +74,7 @@
         <div class="col-md-12">
           <div class="preference">
             <h2>Xin chào, bạn!</h2>
-            <p>Kết nói bạn bè thỏa sức trỏ chuyện.</p>
+            <p>Kết nói bạn bè thỏa sức trò chuyện.</p>
             <a href="#" v-on:click="register()" class="btn button">Đăng ký</a>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default {
         .catch(err => {});
     },
     forgetPass: function(){
-        forget_router.push({name: " forgetpass "});
+        forget_router.push({name: "index"});
         location.reload();
     }
   }

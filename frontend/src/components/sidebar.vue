@@ -17,7 +17,7 @@
 										<button class="btn filterMembersBtn active show" data-toggle="list" data-filter="all">All</button>
 										<button class="btn filterMembersBtn" data-toggle="list" data-filter="online">Online</button>
 										<button class="btn filterMembersBtn" data-toggle="list" data-filter="offline">Offline</button>
-									</div>						
+									</div>
 									<div class="contacts">
 										<h1>Contacts</h1>
 										<div class="list-group" id="contacts" role="tablist">
@@ -155,7 +155,7 @@
 										<button class="btn filterDiscussionsBtn active show" data-toggle="list" data-filter="all">All</button>
 										<button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="read">Read</button>
 										<button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="unread">Unread</button>
-									</div>						
+									</div>
 									<div class="discussions">
 										<h1>Discussions</h1>
 										<div class="list-group" id="chats" role="tablist">
@@ -172,7 +172,7 @@
 													<span>Mon</span>
 													<p>A new feature has been updated to your account. Check it out...</p>
 												</div>
-											</a>									
+											</a>
 											<a href="#list-empty" class="filterDiscussions all unread single" id="list-empty-list" data-toggle="list" role="tab">
 												<img class="avatar-md" src="swipe/img/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
 												<div class="status">
@@ -186,7 +186,7 @@
 													<span>Sun</span>
 													<p>How can i improve my chances of getting a deposit?</p>
 												</div>
-											</a>									
+											</a>
 											<a href="#list-chat" class="filterDiscussions all read single" id="list-chat-list2" data-toggle="list" role="tab">
 												<img class="avatar-md" src="swipe/img/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar">
 												<div class="status">
@@ -286,7 +286,7 @@
 										<button class="btn filterNotificationsBtn active show" data-toggle="list" data-filter="all">All</button>
 										<button class="btn filterNotificationsBtn" data-toggle="list" data-filter="latest">Latest</button>
 										<button class="btn filterNotificationsBtn" data-toggle="list" data-filter="oldest">Oldest</button>
-									</div>						
+									</div>
 									<div class="notifications">
 										<h1>Notifications</h1>
 										<div class="list-group" id="alerts" role="tablist">
@@ -385,12 +385,12 @@
 								</div>
 								<!-- End of Notifications -->
 								<!-- Start of Settings -->
-								<div class="tab-pane fade" id="settings">			
+								<div class="tab-pane fade" id="settings">
 									<div class="settings">
 										<div class="profile">
 											<img class="avatar-xl" src="swipe/img/avatars/avatar-male-1.jpg" alt="avatar">
 											<h1><a href="#">Michael Knudsen</a></h1>
-											<span>Helena, Montana</span>
+											<span>Hà Nội, Việt Nam</span>
 											<div class="stats">
 												<div class="item">
 													<h2>122</h2>
@@ -406,11 +406,14 @@
 												</div>
 											</div>
 										</div>
+
 										<div class="categories" id="accordionSettings">
 											<h1>Settings</h1>
 											<!-- Start of My Account -->
-											<div class="category">
-												<a href="#" class="title collapsed" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+
+											<div class="category" id="myaccount"  v-on:click="sendSetting('changeaccount')">
+
+												<a href="#" class="title collapsed" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" >
 													<i class="material-icons md-30 online">person_outline</i>
 													<div class="data">
 														<h5>My Account</h5>
@@ -428,33 +431,74 @@
 																	<span class="btn button">Upload avatar</span>
 																</label>
 															</div>
-															<p>For best results, use an image at least 256px by 256px in either .jpg or .png format!</p>
+															<p>Để có kết quả tốt nhất, hãy sử dụng hình ảnh ít nhất 256px x 256px ở định dạng .jpg hoặc .png!</p>
 														</div>
-														<form>
+														<form class="account" v-on:submit.prevent="setaccount()" >
 															<div class="parent">
 																<div class="field">
-																	<label for="firstName">First name <span>*</span></label>
-																	<input type="text" class="form-control" id="firstName" placeholder="First name" value="Michael" required>
+																	<label for="firstName">Tên<span>*</span></label>
+                                    								<input type="text" class="form-control" name="inputFirstname" id="inputFirstname" placeholder="Tên" v-model="form.firstname" data-vv-as="first name" v-validate="'alpha'" />
 																</div>
 																<div class="field">
-																	<label for="lastName">Last name <span>*</span></label>
-																	<input type="text" class="form-control" id="lastName" placeholder="Last name" value="Knudsen" required>
+																	<label for="lastName">Họ <span>*</span></label>
+																	<input type="text" id="inputLastname"  class="form-control" name="inputLastname"  placeholder="Họ" v-model="form.lastname" data-vv-as="last name" v-validate="'alpha'" />
+
+																</div>
+															</div>
+															<div class="parent">
+
+																<div class="field">
+																<span
+																	style="color:red;"
+																	v-if="errors.has('inputFirstname')"
+																>{{ errors.first('inputFirstname') }}</span>
+																</div>
+																<div class="field">
+																<span
+																	style="color:red;"
+																	v-if="errors.has('inputLastname')"
+																>{{ errors.first('inputLastname') }}</span>
 																</div>
 															</div>
 															<div class="field">
 																<label for="email">Email <span>*</span></label>
-																<input type="email" class="form-control" id="email" placeholder="Enter your email address" value="michael@gmail.com" required>
+																<input type="email" class="form-control" id="inputEmail" placeholder="Email" v-model="form.email" name="emailuser" data-vv-as="Email" required v-validate.continutes="'required|email'" />
+
 															</div>
 															<div class="field">
-																<label for="password">Password</label>
-																<input type="password" class="form-control" id="password" placeholder="Enter a new password" value="password" required>
+																<span
+																style="color:red;"
+																v-if="errors.has('emailuser')"
+																>{{ errors.first('emailuser') }}</span>
 															</div>
 															<div class="field">
-																<label for="location">Location</label>
-																<input type="text" class="form-control" id="location" placeholder="Enter your location" value="Helena, Montana" required>
+																<label for="password">Mật khẩu</label>
+																<input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="Mật khẩu"  v-model="form.password" data-vv-as="password"  v-validate.continutes="'required|min:6'" ref="inputPassword">
 															</div>
-															<button class="btn btn-link w-100">Delete Account</button>
-															<button type="submit" class="btn button w-100">Apply</button>
+															<div class="field">
+																<span
+																style="color:red;"
+																v-if="errors.has('inputPassword')"
+																>{{ errors.first('inputPassword') }}</span>
+															</div>
+															<div class="field">
+																<label for="location">Vị trí</label>
+																<input type="text" class="form-control" id="inputLocation" placeholder="Nhập vị trí" name="inputLocation" v-model="form.location" data-vv-as="location" v-validate="'required'">
+
+															</div>
+															<div class="field">
+																<span
+																style="color:red;"
+																v-if="errors.has('inputLocation')"
+																>{{ errors.first('inputLocation') }}</span>
+															</div>
+															<div class="field">
+																<p style="color: red;">{{reg_error}}</p>
+															</div>
+
+															<button class="btn btn-link w-100">Xóa tài khoản</button>
+															<button type="submit" class="btn button w-100"  v-if="!disbleReg" v-on:click="setaccount()">Chấp nhận</button>
+                              								<button type="submit" class="btn button w-100" v-if="disbleReg" disabled>Chấp nhận</button>
 														</form>
 													</div>
 												</div>
@@ -462,6 +506,7 @@
 											<!-- End of My Account -->
 											<!-- Start of Chat History -->
 											<div class="category">
+
 												<a href="#" class="title collapsed" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
 													<i class="material-icons md-30 online">mail_outline</i>
 													<div class="data">
@@ -781,8 +826,18 @@
 import Createchat from "@/components/createchat.vue";
 import Addfriend from "@/components/addfriend.vue";
 
+
+import VeeValidate from "vee-validate";
+import Vue from 'vue';
+Vue.use(VeeValidate);
+
+//Đổi thông báo qua tiếng việt
+
+
+
 export default {
-    name:"Sidebar",
+
+  name:"Sidebar",
 	props:["name", "keysidebar"],
 	components: {
 		Createchat,
@@ -807,7 +862,17 @@ export default {
 		  return {
 			  showchat: false,
 			  bar: null,
-			  allowAddFr: false
+        allowAddFr: false,
+        reg_error: null,
+        disbleReg: false,
+        regSuccess: false,
+        form: {
+          email: null,
+          password: null,
+          firstname: null,
+          lastname: null
+      },
+
 		  }
 	  },
 	  mounted() {
@@ -816,7 +881,11 @@ export default {
 	  methods: {
 		  enableChat: function(){
 			  this.showchat = true;
-		  },
+      },
+      setaccount: function() {
+        this.regSuccess = true;
+        alert("Thanh cong");
+      },
 		  enableShowFr: function(){
 			  this.allowAddFr = true;
 		  },
@@ -846,9 +915,14 @@ export default {
 						this.Showbar("discussions");
 						break;
 				}
-		  },
+      },
+      sendSetting: function(name) {
+      this.$emit("getsetting", name);
+    }
+
+
 	  },
-}
+};
 </script>
 
 <style>

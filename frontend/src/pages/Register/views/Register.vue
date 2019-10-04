@@ -96,7 +96,7 @@
                       name="inputPassword"
                       class="form-control"
                       placeholder="Mật khẩu"
-                      
+
                       v-model="form.password"
                       data-vv-as="password"
                       v-validate.continutes="'required|min:6'"
@@ -119,7 +119,7 @@
                       name="inputRePassword"
                       class="form-control"
                       placeholder="Nhập lại mật khẩu"
-                      
+
                       v-model="form.repass"
                       data-vv-as="password confirmation"
                       v-validate="'required|confirmed:inputPassword'"

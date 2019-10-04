@@ -1,5 +1,4 @@
 <template>
-  <!-- End of Create Chat -->
   <div class="main">
     <div class="tab-content" id="nav-tabContent">
       <!-- Start of Babble -->
@@ -603,21 +602,10 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
-    name:"Chat",
-    props:[],
-    methods: {
-      scroll: function(e){
-        console.log(e.target)
-        // if (e.target.scrollHeight <= e.target.scrollTop) {
-        // alert("oi sou Eduardo M");
-        // }
-        // console.log(e.target.scrollHeight);
-      }
-    },
+  name: "ComponentSet",
+  props: ["settingmenu"],
+  methods: {}
 };
 </script>
-<style>
-</style>
