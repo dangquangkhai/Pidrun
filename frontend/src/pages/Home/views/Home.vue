@@ -1,7 +1,7 @@
 
 <template>
   <div class="layout">
-    <Navigation :path="selectPath" v-on:getmenu="getpath"></Navigation>
+    <Navigation :path="selectPath" v-on:getmenu="getpath" :usrdata="userinfo"></Navigation>
     <Sidebar
       v-if="selectPath !== null"
       :name="selectPath"
@@ -43,9 +43,8 @@ export default {
       selectPath: null,
       SidebarKey: 0,
       USR_CONTROLLER: this.$api.getApi() + "/users",
-      userinfo: null,
-      stringSetting:null,
-    };
+      userinfo: null
+      stringSetting:null,    };
   },
   mounted() {
     this.getpath(this.$route.hash);
@@ -95,17 +94,8 @@ export default {
         .then(res => {
           if (res.data.success) {
             this.userinfo = res.data.content;
-            this.getUsrImg();
+            // this.getUsrImg();
           }
-        })
-        .catch();
-    },
-    getUsrImg: function() {
-      this.$http
-        .get(this.USR_CONTROLLER + "/getusrimage")
-        .then(res => {
-          this.userinfo.image = res.data;
-          console.log(res.data);
         })
         .catch();
     },

@@ -5,7 +5,7 @@
       <div class="inside">
         <div class="nav nav-tab menu">
           <button class="btn">
-            <img class="avatar-xl" src="swipe/img/avatars/avatar-male-1.jpg" alt="avatar" />
+            <img class="avatar-xl" id="nav_img" :src="user_dt" alt="avatar" />
           </button>
           <!-- <a href="#members" >
             <i class="material-icons">account_circle</i>
@@ -35,7 +35,7 @@
             :ref="'Navbutton-'+item.name"
             v-on:getname="selmenu"
           ></Navbutton>
-          <button class="btn power" onclick="visitPage();">
+          <button class="btn power" v-on:click="logout()">
             <i class="material-icons">power_settings_new</i>
           </button>
         </div>
@@ -50,9 +50,11 @@
 <script>
 import Navbutton from "@/components/navbutton.vue";
 
+import {TokenService} from "../services/storage.service";
+
 export default {
   name: "Navigation",
-  props: ["path"],
+  props: ["path","usrdata"],
   components: {
     Navbutton
   },
@@ -93,18 +95,58 @@ export default {
           type: "a",
           extend: ""
         }
-      ]
+      ],
+      user_dt: null,
+      USR_CONTROLLER: this.$api.getApi() + "/users",
     };
+  },
+  watch: {
+    usrdata: function(oldVal, newVal){
+      console.log(this.usrdata);
+      if (newVal !== undefined && newVal !== null && oldVal !== newVal) {
+        this.user_dt = newVal;
+        console.log(newVal);
+        for(var item in newVal)
+        {
+          console.log( item.toString() + ":" + newVal[item]);
+        }
+      }
+    },
+    user_dt: function(val) {
+            if (val !== undefined && val !== null) {
+      }
+    }
   },
   mounted() {
     if (this.path !== null) {
       name = "Navbutton-" + this.path;
       this.$refs[name][0].getName();
     }
+    this.getUsrImg();
   },
   methods: {
     selmenu: function(name) {
       this.$emit("getmenu", name);
+    },
+    getUsrImg: function() {
+      this.$http
+        .get(this.USR_CONTROLLER + "/getusrimage", {
+          responseType: "arraybuffer",
+        })
+        .then(res => {
+          //this.userinfo.image = res.data;
+          let blob = new Blob([res.data], {type: 'image/jpg'});
+          let reader = new FileReader();
+          reader.readAsDataURL(blob); // converts the blob to base64 and calls onload
+          reader.onload = (e) => {
+            this.user_dt = reader.result;
+          }
+        })
+        .catch();
+    },
+    logout: function () {
+      TokenService.removeToken();
+      location.reload();
     }
   }
 };

@@ -10,8 +10,9 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var accountRouter = require('./routes/account');
 const validateUser = require("./lib/auth");
-
 var app = express();
+var server = require('http').Server(app).listen(3002);
+var io = require('socket.io')(server);
 
 app.set('secretKey', 'nodeRestApi'); // jwt secret token
 
@@ -29,6 +30,14 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/users', validateUser , usersRouter);
 app.use('/account',accountRouter);
+
+
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

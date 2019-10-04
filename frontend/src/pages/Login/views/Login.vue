@@ -19,7 +19,7 @@
                 </button>
               </div>
               <p>Đăng nhập bằng email:</p>
-              <form>
+              <form v-on:submit.prevent="login()">
                 <div class="form-group">
                   <input
                     type="email"
@@ -28,10 +28,19 @@
                     placeholder="Email"
                     required
                     v-model="form.email"
+                    name="emailuser"
+                    data-vv-as="email"
+                    v-validate.continutes="'required|email'"
                   />
                   <button class="btn icon">
                     <i class="material-icons">mail_outline</i>
                   </button>
+                </div>
+                <div class="form-group">
+                  <span
+                    style="color:red;"
+                    v-if="errors.has('emailuser')"
+                  >{{ errors.first('emailuser') }}</span>
                 </div>
                 <div class="form-group">
                   <input
@@ -41,19 +50,38 @@
                     placeholder="Mật khẩu"
                     required
                     v-model="form.pass"
+                    name="inputPassword"
+                    data-vv-as="password"
+                    v-validate="'required'"
                   />
                   <button class="btn icon">
                     <i class="material-icons">lock_outline</i>
                   </button>
                 </div>
                 <div class="form-group">
+                  <span
+                    style="color:red;"
+                    v-if="errors.has('inputPassword')"
+                  >{{ errors.first('inputPassword') }}</span>
+                </div>
+                <div class="form-group">
                   <p style="color: red;">{{login_error}}</p>
                 <div class="forget">
                   <a href="#" v-on:click="forgetPass()" >Quên mật khẩu? Nhấp vào đây</a>
                 </div>
-                </div>
-                <button type="button" class="btn button" v-if="!disbleLogin" v-on:click="login()">Đăng nhập</button>
-                <button type="button" class="btn button" v-if="disbleLogin" v-on:click="login()" disabled>Đăng nhập</button>
+                <button
+                  type="button"
+                  class="btn button"
+                  v-if="!disbleLogin"
+                  v-on:click="login()"
+                >Đăng nhập</button>
+                <button
+                  type="button"
+                  class="btn button"
+                  v-if="disbleLogin"
+                  v-on:click="login()"
+                  disabled
+                >Đăng nhập</button>
 
                 <div class="callout">
                   <span>
@@ -90,6 +118,8 @@ import home_router from "../../Home/router";
 import { TokenService } from "../../../services/storage.service";
 import forget_router from "../../ForgetPass/router";
 
+import VeeValidate from "vee-validate";
+
 export default {
   name: "login",
   data() {
@@ -112,25 +142,34 @@ export default {
     },
     login: function() {
       this.disbleLogin = true;
-      this.$http
-        .post(this.LOGIN_CONTROLLER + "/login", { user: this.form })
-        .then(val => {
-          if (val.data.success) {
-            this.login_error = null;
-            this.user_info = val.data.content.data.user;
-            TokenService.removeToken();
-            TokenService.removeRefreshToken();
-            TokenService.saveToken(val.data.content.data.token);
-            //TokenService.saveRefreshToken(response.data.refresh_token);
-            home_router.push({ name: "home" });
-            location.reload();
-          } else {
-            this.login_error = "Email hoặc mật khẩu không đúng";
-            this.disbleLogin = false;
+      this.$validator
+        .validateAll()
+        .then(res => {
+          if (res) {
+            this.$http
+              .post(this.LOGIN_CONTROLLER + "/login", { user: this.form })
+              .then(val => {
+                if (val.data.success) {
+                  this.login_error = null;
+                  this.user_info = val.data.content.data.user;
+                  TokenService.removeToken();
+                  TokenService.removeRefreshToken();
+                  TokenService.saveToken(val.data.content.data.token);
+                  //TokenService.saveRefreshToken(response.data.refresh_token);
+                  home_router.push({ name: "home" });
+                  location.reload();
+                } else {
+                  this.login_error = "Email hoặc mật khẩu không đúng";
+                  this.disbleLogin = false;
+                }
+              })
+              .catch(err => {});
           }
 
         })
-        .catch(err => {});
+        .catch(err => {
+          console.log(err);
+        });
     },
     forgetPass: function(){
         forget_router.push({name: "index"});
