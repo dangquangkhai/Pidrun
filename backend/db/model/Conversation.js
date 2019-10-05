@@ -29,6 +29,12 @@ let conversationSchema = new Schema({
   lastMessageTime: {
     type: Date,
     required: false
+  },
+  //Conversation type
+  //Example: Private chat or group chat
+  conType:{
+    type: String,
+    required: false
   }
 });
 

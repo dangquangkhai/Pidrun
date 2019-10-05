@@ -26,7 +26,25 @@ let messagesSchema = new Schema({
         type: Date,
         required: false
     },
-    
+    // Contain list user in conversation read it or not date time
+    // Store as object json
+    // Example:
+    /*
+    *  {
+    *     ReadBy: {userid, email, firstname, lastname},
+    *     ReadTime: {datetime}
+    *  }
+    * */
+    readList:{
+        type:Object,
+        required: false
+    },
+    // Message type
+    // Example: Media type or document type
+    messType:{
+        type: String,
+        required: false
+    }
 });
 
 module.exports = mongoose.model("Messages", messagesSchema);

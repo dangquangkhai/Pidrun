@@ -16,7 +16,7 @@ const Participants = require("../model/Participants");
 class ConversationProvider {
   //Create conversation
   //Conversation can be one to one message or many to many message
-  async createCnver(groupName, lstUsr, UserId) {
+  async createCnver(groupName, lstUsr, UserId, conType) {
     //Create a conversation
     let conVer = new Conversation();
     conVer.title = groupName;
@@ -25,6 +25,7 @@ class ConversationProvider {
     conVer.updated = new Date();
     conVer.lastMessageId = null;
     conVer.lastMessageTime = new Date();
+    conVer.conType = conType;
     let create = await Conversation.create(conVer)
       .then(val => {
         return {
@@ -247,6 +248,7 @@ class ConversationProvider {
         return { success: false, content: val };
       });
   }
+
   async getConv(UserId, NextId = null, Length = 20, callback) {
     if (Length > 20) {
       callback({
@@ -280,9 +282,13 @@ class ConversationProvider {
           .limit(Length)
           .exec(async (err, res) => {
             let messId = [];
+            let lstUsrId = [];
+            let lstConId = [];
             res.forEach((item, index) => {
               messId.push(item.lastMessageId);
+              lstConId.push(item._id);
             });
+            // get user info for newest message
             let lstMess = await Messsages.find({ _id: { $in: messId } })
               .then(val => {
                 return val;
@@ -290,7 +296,18 @@ class ConversationProvider {
               .catch(err => {
                 return false;
               });
+            lstMess.forEach(val => {
+              lstUsrId.push(val.SenderId);
+            });
+            let lstUsrInfo = await Users.find({ _id: { $in: lstUsrId } })
+              .then(val => {
+                return val;
+              })
+              .catch(err => {
+                return false;
+              });
             if (lstMess != false) {
+              let lstOutput;
               for (let i = 0; i < res.length; i++) {
                 res[i].mess = lstMess.find((val, index) => {
                   return (
@@ -354,7 +371,7 @@ class ConversationProvider {
               });
             if (lstMess != false) {
               for (let i = 0; i < res.length; i++) {
-                res[i].mess = lstMess.find((val, index) => {
+                let mess = lstMess.find((val, index) => {
                   return (
                     JSON.stringify(res[i]._id) ==
                     JSON.stringify(val.ConversationId)
@@ -380,6 +397,7 @@ function convertDate(date) {
   function pad(s) {
     return s < 10 ? "0" + s : s;
   }
+
   let convert_d = new Date(date);
   return (
     pad(convert_d.getDate()) +
@@ -420,14 +438,22 @@ let _provider = new ConversationProvider();
 //   .then(val => {
 //     console.log(val);
 //   });
-_provider.getConv("5d51347486f7b41cbc039314", null, 20, val => {
-  val.forEach((val, index) => {
-    console.log(
-      val._id + " " + convertDate(val.lastMessageTime) + " " + val.mess.message
-    );
-  });
-});
-
+// _provider.getConv("5d51347486f7b41cbc039314", null, 20, val => {
+//     val.forEach((val, index) => {
+//         console.log(
+//             val._id + " " + convertDate(val.lastMessageTime) + " " + val.mess.message
+//         );
+//     });
+// });
+// (async () => {
+//   await Conversation.updateMany(
+//     {},
+//     { conType: "PrivateChat" },
+//     { multi: true }
+//   ).then(val => {
+//     console.log(val);
+//   });
+// })();
 // _provider
 //   .SendMessage(
 //     "5d9469086b8ed33aa3068652c",
