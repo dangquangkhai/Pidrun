@@ -7,10 +7,11 @@
       :name="selectPath"
       :keysidebar="SidebarKey"
       v-on:resetkeybar="SidebarKey = 0"
+      v-on:getcon="getcon"
     ></Sidebar>
     <!-- <Sidebar></Sidebar>
     <Addfriend></Addfriend>-->
-    <Chat></Chat>
+    <Chat :coninfo="conInfo"></Chat>
   </div>
 </template>
 
@@ -39,7 +40,8 @@ export default {
       selectPath: null,
       SidebarKey: 0,
       USR_CONTROLLER: this.$api.getApi() + "/users",
-      userinfo: {}
+      userinfo: {},
+      conInfo: null
     };
   },
   mounted() {
@@ -95,6 +97,10 @@ export default {
         })
         .catch();
     },
+    getcon(obj) {
+      console.log(obj);
+      this.conInfo = obj;
+    }
   }
 };
 </script>

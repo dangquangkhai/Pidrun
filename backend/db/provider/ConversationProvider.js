@@ -13,6 +13,9 @@ const DeletedMessage = require("../model/DeletedMessage");
 const DeletedConversation = require("../model/DeletedConversation");
 const Participants = require("../model/Participants");
 
+const utils = require("../../lib/utils");
+const path = require("path");
+
 class ConversationProvider {
   //Create conversation
   //Conversation can be one to one message or many to many message
@@ -230,23 +233,63 @@ class ConversationProvider {
         content: "Maximum length message"
       });
     }
+    let listOutput = [];
+    let listMess = [];
+    let listSenderId = [];
+    let listSender = [];
+    let condition = null;
+    let sort = null;
     if (MessId == null || MessId == undefined) {
-      return await Messsages.find({ ConversationId: ConverId })
-        .sort({ created: "desc" })
-        .limit(Length)
-        .then(val => {
-          return { success: true, content: val };
-        });
+      condition = { ConversationId: ConverId };
+      sort = { created: "desc" };
+      // query = await Messsages.find({ ConversationId: ConverId }).sort({
+      //   created: "desc"
+      // });
+    } else {
+      condition = {
+        ConversationId: ConverId,
+        _id: { $lt: MessId }
+      };
+      sort = { _id: -1, created: "desc" };
+      // query = await Messsages.find({
+      //   ConversationId: ConverId,
+      //   _id: { $gt: MessId }
+      // }).sort({ _id: 1, created: "desc" });
     }
-    return await Messsages.find({
-      ConversationId: ConverId,
-      _id: { $gt: MessId }
-    })
-      .sort({ _id: 1, created: "desc" })
-      .limit(length)
+    listMess = await Messsages.find(condition)
+      .sort(sort)
+      .limit(Length)
       .then(val => {
-        return { success: false, content: val };
+        return val;
       });
+    listMess.forEach((item, index) => {
+      listSenderId.push(item.SenderId);
+    });
+    listSender = await Users.find({ _id: { $in: listSenderId } })
+      .select("_id email firstname lastname image")
+      .then(val => {
+        return val;
+      });
+    for (let i = 0; i < listMess.length; i++) {
+      let mess = new Object(listMess[i]);
+      let sender = new Object(listSender[i]);
+      sender.image =
+        sender.image !== "" &&
+        sender.image !== null &&
+        sender.image !== undefined
+          ? utils.encodeUrl(sender.image)
+          : utils.encodeUrl(
+              path.resolve(__dirname, "../public/images/") +
+                "/default-avatar.jpg"
+            );
+      listOutput.push(
+        new Object({
+          mess: mess,
+          sender: sender
+        })
+      );
+    }
+    return await new Object({ success: true, content: listOutput });
   }
 
   async getConv(UserId, NextId = null, Length = 20, callback) {
@@ -372,7 +415,7 @@ class ConversationProvider {
                 );
               }
               //console.log(res);
-              callback(lstOutput);
+              callback(new Object({ success: true, content: lstOutput }));
             } else {
               callback(
                 new Object({
@@ -505,7 +548,7 @@ class ConversationProvider {
                 );
               }
               //console.log(res);
-              callback(lstOutput);
+              callback(new Object({ success: true, content: lstOutput }));
             } else {
               callback(
                 new Object({
@@ -544,17 +587,19 @@ let _provider = new ConversationProvider();
 // Participants.deleteOne({ _id: "5d82188f146e1954508b9b2d" }).then(val =>
 //   console.log(val)
 // );
-// _provider.getMessage("5d836eb86408de44c79391f2", null, 10).then(val => {
-//   if (!val.success) {
-//     console.log(val.content);
-//     return;
-//   }
-//   let arr = val.content;
-//   jsonArray = JSON.parse(JSON.stringify(arr));
-//   jsonArray.forEach((item, index) => {
-//     console.log(item._id + " Date: " + convertDate(item.created));
+// _provider
+//   .getMessage("5d836eb86408de44c79391f2", "5d8b2382144a792ae9005dab", 10)
+//   .then(val => {
+//     if (!val.success) {
+//       console.log(val.content);
+//       return;
+//     }
+//     let arr = val.content;
+//     jsonArray = JSON.parse(JSON.stringify(arr));
+//     jsonArray.forEach((item, index) => {
+//       console.log(item.mess._id + " Date: " + convertDate(item.mess.created));
+//     });
 //   });
-// });
 // _provider
 //   .SendMessage(
 //     "5d836eb86408de44c79391f2",
