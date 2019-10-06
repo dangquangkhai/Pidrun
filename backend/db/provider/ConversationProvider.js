@@ -284,6 +284,8 @@ class ConversationProvider {
             let messId = [];
             let lstUsrId = [];
             let lstConId = [];
+
+            //Get last message sender Id and list conversation id
             res.forEach((item, index) => {
               messId.push(item.lastMessageId);
               lstConId.push(item._id);
@@ -299,7 +301,41 @@ class ConversationProvider {
             lstMess.forEach(val => {
               lstUsrId.push(val.SenderId);
             });
+
+            let parIdOfCon = await Participants.find({
+              ConversationId: { $in: lstConId },
+              UserId: { $ne: UserId }
+            })
+              .select("ConversationId UserId")
+              .then(val => {
+                return val;
+              })
+              .catch(err => {
+                return [];
+              });
+            let parOfCon = [];
+            parIdOfCon.forEach(item => {
+              parOfCon.push(item.UserId);
+            });
+            let finalParInfo = await Users.find({ _id: { $in: parOfCon } })
+              .select("_id email firstname lastname")
+              .then(val => {
+                let ouput = [];
+                for (let i = 0; i < parOfCon.length; i++) {
+                  ouput.push(
+                    new Object({
+                      conId: parIdOfCon[i].ConversationId,
+                      usr: val[i]
+                    })
+                  );
+                }
+                return ouput;
+              })
+              .catch(err => {
+                return [];
+              });
             let lstUsrInfo = await Users.find({ _id: { $in: lstUsrId } })
+              .select("_id email firstname lastname")
               .then(val => {
                 return val;
               })
@@ -307,17 +343,36 @@ class ConversationProvider {
                 return false;
               });
             if (lstMess != false) {
-              let lstOutput;
+              let lstOutput = [];
               for (let i = 0; i < res.length; i++) {
-                res[i].mess = lstMess.find((val, index) => {
+                let mess = lstMess.find((val, index) => {
                   return (
                     JSON.stringify(res[i]._id) ==
                     JSON.stringify(val.ConversationId)
                   );
                 });
+                let senderInfo = lstUsrInfo.find((val, index) => {
+                  return (
+                    JSON.stringify(mess.SenderId) == JSON.stringify(val._id)
+                  );
+                });
+                let par = [];
+                finalParInfo.forEach(val => {
+                  if (JSON.stringify(val.conId) == JSON.stringify(res[i]._id)) {
+                    par.push(val.usr);
+                  }
+                });
+                lstOutput.push(
+                  new Object({
+                    conversation: res[i],
+                    mess: mess,
+                    senderInfo: senderInfo,
+                    par: par
+                  })
+                );
               }
               //console.log(res);
-              callback(res);
+              callback(lstOutput);
             } else {
               callback(
                 new Object({
@@ -359,8 +414,11 @@ class ConversationProvider {
           .limit(Length)
           .exec(async (err, res) => {
             let messId = [];
+            let lstUsrId = [];
+            let lstConId = [];
             res.forEach((item, index) => {
               messId.push(item.lastMessageId);
+              lstConId.push(item._id);
             });
             let lstMess = await Messsages.find({ _id: { $in: messId } })
               .then(val => {
@@ -369,7 +427,56 @@ class ConversationProvider {
               .catch(err => {
                 return false;
               });
+            lstMess.forEach(val => {
+              lstUsrId.push(val.SenderId);
+            });
+
+            let parIdOfCon = await Participants.find({
+              ConversationId: { $in: lstConId },
+              UserId: { $ne: UserId }
+            })
+              .select("ConversationId UserId")
+              .then(val => {
+                return val;
+              })
+              .catch(err => {
+                return [];
+              });
+            let parOfCon = [];
+            parIdOfCon.forEach(item => {
+              parOfCon.push(item.UserId);
+            });
+            let finalParInfo = await Users.find({
+              _id: { $in: parOfCon }
+            })
+              .select("_id email firstname lastname")
+              .then(val => {
+                let ouput = [];
+                for (let i = 0; i < parOfCon.length; i++) {
+                  ouput.push(
+                    new Object({
+                      conId: parIdOfCon[i].ConversationId,
+                      usr: val[i]
+                    })
+                  );
+                }
+                return ouput;
+              })
+              .catch(err => {
+                return [];
+              });
+            let lstUsrInfo = await Users.find({
+              _id: { $in: lstUsrId }
+            })
+              .select("_id email firstname lastname")
+              .then(val => {
+                return val;
+              })
+              .catch(err => {
+                return false;
+              });
             if (lstMess != false) {
+              let lstOutput = [];
               for (let i = 0; i < res.length; i++) {
                 let mess = lstMess.find((val, index) => {
                   return (
@@ -377,9 +484,28 @@ class ConversationProvider {
                     JSON.stringify(val.ConversationId)
                   );
                 });
+                let senderInfo = lstUsrInfo.find((val, index) => {
+                  return (
+                    JSON.stringify(mess.SenderId) == JSON.stringify(val._id)
+                  );
+                });
+                let par = [];
+                finalParInfo.forEach(val => {
+                  if (JSON.stringify(val.conId) == JSON.stringify(res[i]._id)) {
+                    par.push(val.usr);
+                  }
+                });
+                lstOutput.push(
+                  new Object({
+                    conversation: res[i],
+                    mess: mess,
+                    senderInfo: senderInfo,
+                    par: par
+                  })
+                );
               }
               //console.log(res);
-              callback(res);
+              callback(lstOutput);
             } else {
               callback(
                 new Object({
@@ -438,13 +564,23 @@ let _provider = new ConversationProvider();
 //   .then(val => {
 //     console.log(val);
 //   });
-// _provider.getConv("5d51347486f7b41cbc039314", null, 20, val => {
+// _provider.getConv(
+//   "5d51347486f7b41cbc039314",
+//   "5d9469086b8ed33aa306864e",
+//   5,
+//   val => {
 //     val.forEach((val, index) => {
-//         console.log(
-//             val._id + " " + convertDate(val.lastMessageTime) + " " + val.mess.message
-//         );
+//       console.log(
+//         "Conversation Id:" +
+//           val.conversation._id +
+//           " - Mess:" +
+//           val.mess.message +
+//           " - Time: " +
+//           convertDate(val.conversation.lastMessageTime)
+//       );
 //     });
-// });
+//   }
+// );
 // (async () => {
 //   await Conversation.updateMany(
 //     {},
