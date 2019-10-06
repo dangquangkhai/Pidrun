@@ -18,16 +18,9 @@ router.get("/getconv", validateUser.validateUser, (req, res, next) => {
 });
 
 router.get("/defaultimage", (req, res, next) => {
-  let image = sharp(
+  res.sendFile(
     path.resolve(__dirname, "../public/images/") + "/default-avatar.jpg"
-  )
-    .resize(200)
-    .toFile("default-avatar.jpg")
-    .then(data => {
-      console.log(data);
-      res.sendFile(data);
-    })
-    .catch(err => {});
+  );
 });
 
 module.exports = router;
