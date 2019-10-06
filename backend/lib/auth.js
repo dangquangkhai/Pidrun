@@ -32,4 +32,4 @@ function getUsrInfo(req, res, next) {
   });
 }
 
-module.exports = validateUser;
+module.exports = { validateUser, getUsrInfo };

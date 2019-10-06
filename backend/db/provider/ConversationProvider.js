@@ -539,7 +539,7 @@ function convertDate(date) {
     pad(convert_d.getSeconds())
   );
 }
-
+module.exports = new ConversationProvider();
 let _provider = new ConversationProvider();
 // Participants.deleteOne({ _id: "5d82188f146e1954508b9b2d" }).then(val =>
 //   console.log(val)

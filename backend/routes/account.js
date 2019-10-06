@@ -80,7 +80,7 @@ router.post("/login", (req, res) => {
   }
 });
 
-router.post("/IsLoged", validateUser, (req, res) => {
+router.post("/IsLoged", validateUser.validateUser, (req, res) => {
   return res.json({
     status: "success",
     message: "User Already Login",

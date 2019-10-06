@@ -1,0 +1,39 @@
+{
+  "name": "pidrun",
+  "version": "1.0.0",
+  "description": "\"Message platform for any device support json\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dangquangkhai/Pidrun.git"
+  },
+  "keywords": [
+    "\"Message",
+    "Pidrun",
+    "HTML",
+    "CSS",
+    "JS",
+    "Vue",
+    "Bootstrap",
+    "ExpressJS",
+    "NodeJS",
+    "Linux",
+    "Windows",
+    "Socket.IO",
+    "WebRTC",
+    "Json",
+    "Object",
+    "Platform",
+    "Cross",
+    "Platform\""
+  ],
+  "author": "Dang Quang Khai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dangquangkhai/Pidrun/issues"
+  },
+  "homepage": "https://github.com/dangquangkhai/Pidrun#readme"
+}
