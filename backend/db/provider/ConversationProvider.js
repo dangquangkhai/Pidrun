@@ -361,7 +361,7 @@ class ConversationProvider {
               parOfCon.push(item.UserId);
             });
             let finalParInfo = await Users.find({ _id: { $in: parOfCon } })
-              .select("_id email firstname lastname")
+              .select("_id email firstname lastname image")
               .then(val => {
                 let ouput = [];
                 for (let i = 0; i < parOfCon.length; i++) {
@@ -405,9 +405,37 @@ class ConversationProvider {
                     par.push(val.usr);
                   }
                 });
+                let conversation = new Object(res[i]);
+                switch (conversation.conType) {
+                  case "PrivateChat":
+                    let parti = new Object(par[0]);
+                    parti.image =
+                      parti.image !== null &&
+                      parti.image !== undefined &&
+                      parti.image !== ""
+                        ? parti.image
+                        : path.resolve(__dirname, "../../public/images/") +
+                          "/default-avatar.jpg";
+                    conversation.image = utils.encodeUrl(parti.image);
+                    break;
+                  case "GroupChat":
+                    conversation.image =
+                      conversation.image !== null &&
+                      conversation.image !== undefined &&
+                      conversation.image !== ""
+                        ? utils.encodeUrl(conversation.image)
+                        : utils.encodeUrl(
+                            path.resolve(__dirname, "../../public/images/") +
+                              "/default-group.png"
+                          );
+                    break;
+                }
+                for (let i = 0; i < par.length; i++) {
+                  par[i].image = null;
+                }
                 lstOutput.push(
                   new Object({
-                    conversation: res[i],
+                    conversation: conversation,
                     mess: mess,
                     senderInfo: senderInfo,
                     par: par
@@ -538,9 +566,37 @@ class ConversationProvider {
                     par.push(val.usr);
                   }
                 });
+                let conversation = new Object(res[i]);
+                switch (conversation.conType) {
+                  case "PrivateChat":
+                    let parti = new Object(par[0]);
+                    parti.image =
+                      parti.image !== null &&
+                      parti.image !== undefined &&
+                      parti.image !== ""
+                        ? parti.image
+                        : path.resolve(__dirname, "../../public/images/") +
+                          "/default-avatar.jpg";
+                    conversation.image = utils.encodeUrl(parti.image);
+                    break;
+                  case "GroupChat":
+                    conversation.image =
+                      conversation.image !== null &&
+                      conversation.image !== undefined &&
+                      conversation.image !== ""
+                        ? utils.encodeUrl(conversation.image)
+                        : utils.encodeUrl(
+                            path.resolve(__dirname, "../../public/images/") +
+                              "/default-group.png"
+                          );
+                    break;
+                }
+                for (let i = 0; i < par.length; i++) {
+                  par[i].image = null;
+                }
                 lstOutput.push(
                   new Object({
-                    conversation: res[i],
+                    conversation: conversation,
                     mess: mess,
                     senderInfo: senderInfo,
                     par: par

@@ -160,7 +160,7 @@
                         <h1>Discussions</h1>
                         <div class="list-group" id="chats" role="tablist">
                             <a class="filterDiscussions all single" v-for="(item, index) in lstCon" v-on:click="getMessage(item, index)" :key='"key-"+item.conversation._id + "-" + index' :id='"id-"+item.conversation._id + "-" + index'>
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" :src="CON_CONTROLLER + '/getimage/' + item.conversation.image" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>

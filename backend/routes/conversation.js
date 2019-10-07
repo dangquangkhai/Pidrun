@@ -38,7 +38,13 @@ router.post("/getmess", validateUser.validateUser, (req, res, next) => {
 router.get("/getusrimage/:url", (req, res, next) => {
   let encodedUrl = req.params.url;
   let decodeUrl = utils.decodeUrl(encodedUrl);
-  res.sendfile(decodeUrl);
+  res.sendFile(decodeUrl);
+});
+
+router.get("/getimage/:url", (req, res, next) => {
+  let encodedUrl = req.params.url;
+  let decodeUrl = utils.decodeUrl(encodedUrl);
+  res.sendFile(decodeUrl);
 });
 
 router.get("/users/:userId/books/:bookId", function(req, res) {
