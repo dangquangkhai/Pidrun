@@ -252,10 +252,13 @@ export default {
     },
     sendMess(data) {
       console.log(data);
+      if (data !== null && data !== undefined) {
+        this.addMessage(data);
+      }
     },
     receiveMess(data) {
-      this.message = null;
       if (data !== null && data !== undefined) {
+        this.addMessage(data);
       }
     }
   },
@@ -340,7 +343,7 @@ export default {
       let mess = new Object(this.message);
       let obj = {
         _id: this.coninfo.conversation._id,
-        mess: this.mess,
+        mess: mess,
         par: this.coninfo.par,
         sender: this.usrinfo._id
       };
@@ -353,12 +356,48 @@ export default {
       this.$socket.emit("isonline", UserId);
       return "";
     },
+    formatMess(arr) {
+      const groups = arr.reduce((groups, item) => {
+        const date = this.$moment(item.mess.created).format("DD/MM/YYYY"); //.split('T')[0];
+        if (!groups[date]) {
+          groups[date] = [];
+        }
+        groups[date].push(item);
+        return groups;
+      }, {});
+      // Edit: to add it in the array format instead
+      const groupArrays = Object.keys(groups).map(date => {
+        return {
+          date,
+          child: groups[date]
+        };
+      });
+      return groupArrays;
+    },
     addMessage(item) {
       if (item === undefined || item === null) {
         return;
       }
       let arr = [];
       arr.push(item);
+      arr = this.formatMess(arr);
+      arr.forEach(item => {
+        let find = this.conMess.findIndex(subItem => {
+          return subItem.date == item.date;
+        });
+        console.log(find);
+        if (find > -1) {
+          this.conMess[find].child.unshift.apply(
+            this.conMess[find].child,
+            item.child
+          );
+          let obj = new Object(this.conMess[find]);
+          console.log(obj);
+          // this.conMess.splice(find, 1, obj);
+        } else {
+          //  this.conMess.push(item);
+        }
+      });
     }
   }
 };

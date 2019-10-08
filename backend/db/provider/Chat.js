@@ -112,22 +112,38 @@ module.exports.sockets = function(http) {
               let lstSocket = [];
               let par = [];
               par = message.par;
-              for (let i = 0; i < users.length; i++) {
-                console.log(par.length);
-                par.forEach(item => {
-                  if (
-                    JSON.stringify(users[i].data) == JSON.stringify(item._id)
-                  ) {
-                    lstSocket.push(users[i].id);
+              _provider.getSender(message.sender).then(sender => {
+                if (sender !== null && sender !== undefined) {
+                  for (let i = 0; i < users.length; i++) {
+                    par.forEach(item => {
+                      if (
+                        JSON.stringify(users[i].data) ==
+                        JSON.stringify(item._id)
+                      ) {
+                        lstSocket.push(users[i].id);
+                      }
+                    });
                   }
-                });
-              }
-              _socket.emit("sendMess", { value: val.content });
-              if (lstSocket !== undefined && lstSocket !== null) {
-                lstSocket.forEach((item, index) => {
-                  _socket.to(item).emit("receiveMess", { value: val.content });
-                });
-              }
+                  _socket.emit(
+                    "sendMess",
+                    new Object({
+                      mess: val.content,
+                      sender: sender
+                    })
+                  );
+                  if (lstSocket !== undefined && lstSocket !== null) {
+                    lstSocket.forEach((item, index) => {
+                      _socket.to(item).emit(
+                        "receiveMess",
+                        new Object({
+                          mess: val.content,
+                          sender: sender
+                        })
+                      );
+                    });
+                  }
+                }
+              });
             }
           });
       }

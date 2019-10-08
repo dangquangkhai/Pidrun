@@ -626,6 +626,20 @@ class ConversationProvider {
           });
       });
   }
+  async getSender(UserId) {
+    return await Users.findById(UserId)
+      .select("_id email firstname lastname image")
+      .then(val => {
+        val.image =
+          val.image !== "" && val.image !== null && val.image !== undefined
+            ? utils.encodeUrl(val.image)
+            : utils.encodeUrl(
+                path.resolve(__dirname, "../../public/images/") +
+                  "/default-avatar.jpg"
+              );
+        return val;
+      });
+  }
 }
 
 function convertDate(date) {
