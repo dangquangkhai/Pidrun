@@ -211,8 +211,9 @@ class ConversationProvider {
             return { success: true, content: err };
           }
         });
+
       if (query.success) {
-        return { success: true, content: "Create sucess" };
+        return { success: true, content: val };
       }
       return { success: false, content: query.content };
     });
@@ -270,16 +271,25 @@ class ConversationProvider {
       .then(val => {
         return val;
       });
+    //console.log(listSender);
     for (let i = 0; i < listMess.length; i++) {
       let mess = new Object(listMess[i]);
-      let sender = new Object(listSender[i]);
+      let sender = new Object(
+        JSON.parse(
+          JSON.stringify(
+            listSender.find((item, index) => {
+              return JSON.stringify(item._id) == JSON.stringify(mess.SenderId);
+            })
+          )
+        )
+      );
       sender.image =
         sender.image !== "" &&
         sender.image !== null &&
         sender.image !== undefined
           ? utils.encodeUrl(sender.image)
           : utils.encodeUrl(
-              path.resolve(__dirname, "../public/images/") +
+              path.resolve(__dirname, "../../public/images/") +
                 "/default-avatar.jpg"
             );
       listOutput.push(
@@ -660,7 +670,7 @@ let _provider = new ConversationProvider();
 //   .SendMessage(
 //     "5d836eb86408de44c79391f2",
 //     "5d51347486f7b41cbc039314",
-//     "Hello anh da den"
+//     "Hello anh oi"
 //   )
 //   .then(val => {
 //     console.log(val);
@@ -693,10 +703,15 @@ let _provider = new ConversationProvider();
 // })();
 // _provider
 //   .SendMessage(
-//     "5d9469086b8ed33aa3068652c",
-//     "5d51347486f7b41cbc039314",
-//     "Hello AAA AAA 11.1"
+//     "5d836eb86408de44c79391f2",
+//     "5d708885f5c4952698cdd075",
+//     "Anh à 😂"
 //   )
 //   .then(val => {
 //     console.log(val);
 //   });
+// console.log(
+//   utils.decodeUrl(
+//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJleUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMWNtd2lPaUl2YUc5dFpTOXJhR0ZwTDFCeWIycGxZM1J6TDFCcFpISjFiaTlpWVdOclpXNWtMM0IxWW14cFl5OXBiV0ZuWlhNdlpHVm1ZWFZzZEMxaGRtRjBZWEl1YW5Cbklpd2lhV0YwSWpveE5UY3dOREkzT0RjeWZRLnZmTUM4MWJnWDM2YlA5Z1hvSy1ZcHBTVXcwOVNQdWJlNWo4dC1JdFVYdVUiLCJpYXQiOjE1NzA0Mjc4NzJ9.Q3TBV5Ow6jtoBpmE-vfklrcgLexO75MdvkGlhrkiafE"
+//   )
+// );

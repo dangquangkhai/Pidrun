@@ -7,6 +7,7 @@ import { TokenService } from "../../services/storage.service";
 let api = require("../../assets/js/host");
 import login_router from "../Login/router";
 import io from "socket.io-client";
+import VueSocketIO from "vue-socket.io";
 
 let moment = require("moment");
 
@@ -16,9 +17,14 @@ Vue.config.productionTip = false;
 
 Vue.prototype.$api = api;
 
-var socket = io.connect(api.getSockApi());
-
-Vue.prototype.$socket = socket;
+//var socket = io.connect(api.getSockApi());
+Vue.use(
+  new VueSocketIO({
+    debug: false,
+    connection: api.getSockApi()
+  })
+);
+//Vue.prototype.$Socket = socket;
 
 Vue.prototype.$moment = moment;
 

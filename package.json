@@ -35,5 +35,6 @@
   "bugs": {
     "url": "https://github.com/dangquangkhai/Pidrun/issues"
   },
-  "homepage": "https://github.com/dangquangkhai/Pidrun#readme"
+  "homepage": "https://github.com/dangquangkhai/Pidrun#readme",
+  "dependencies": {}
 }

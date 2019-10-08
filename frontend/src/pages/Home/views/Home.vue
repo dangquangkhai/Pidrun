@@ -11,7 +11,7 @@
     ></Sidebar>
     <!-- <Sidebar></Sidebar>
     <Addfriend></Addfriend>-->
-    <Chat :coninfo="conInfo"></Chat>
+    <Chat :coninfo="conInfo" :usrinfo="userinfo"></Chat>
   </div>
 </template>
 
@@ -41,17 +41,29 @@ export default {
       SidebarKey: 0,
       USR_CONTROLLER: this.$api.getApi() + "/users",
       userinfo: {},
-      conInfo: null
+      conInfo: null,
+      stremInfo: null
     };
   },
   mounted() {
     this.getpath(this.$route.hash);
-    console.log(CONTROLLER);
-    console.log(this.$api);
     if (LibUtils.LibUtils.isEmpty(CONTROLLER)) {
-      console.log("Rỗng");
+      // console.log("Rỗng");
     }
-    this.getUsrInfo();
+    //this.getUsrInfo();
+  },
+  sockets: {
+    connect() {
+      console.log("connected to chat server");
+      this.getUsrInfo();
+    },
+    count(val) {
+      this.count = val.count;
+    },
+    message(data) {},
+    checkonline(data) {
+      console.log(data);
+    }
   },
   methods: {
     getpath: function(path) {
@@ -93,12 +105,12 @@ export default {
           if (res.data.success) {
             this.userinfo = res.data.content;
             // this.getUsrImg();
+            this.$socket.emit("sendUsrInfo", this.userinfo);
           }
         })
         .catch();
     },
     getcon(obj) {
-      console.log(obj);
       this.conInfo = obj;
     }
   }

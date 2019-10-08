@@ -12,10 +12,10 @@ var accountRouter = require("./routes/account");
 var conversationRouter = require("./routes/conversation");
 const validateUser = require("./lib/auth");
 var app = express();
-var server = require("http")
+var http = require("http")
   .Server(app)
   .listen(3002);
-var io = require("socket.io")(server);
+require("./db/provider/Chat").sockets(http);
 
 app.set("secretKey", "nodeRestApi"); // jwt secret token
 
