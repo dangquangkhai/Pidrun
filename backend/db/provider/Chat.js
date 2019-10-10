@@ -15,9 +15,9 @@ module.exports.sockets = function(http) {
   };
 
   io.on("connection", function(socket) {
-    console.log("a user connected");
+    //console.log("a user connected");
     socket.on("sendUsrInfo", function(data) {
-      console.log("a user " + data._id + " connected");
+      //console.log("a user " + data._id + " connected");
       //saving userId to array with socket ID
       let newInfo = new Object({
         id: new Object(socket.id),
@@ -43,7 +43,7 @@ module.exports.sockets = function(http) {
     socket.on("disconnect", function() {
       let find = undefined;
       if (users.length > 0) {
-        console.log(socket.id);
+        //console.log(socket.id);
         for (let i = 0; i < users.length; i++) {
           if (users[i] !== undefined && users[i] !== null) {
             if (users[i].id == socket.id) {
@@ -53,9 +53,9 @@ module.exports.sockets = function(http) {
           }
         }
       }
-      console.log(find);
+      //console.log(find);
       if (find !== undefined && find > -1) {
-        console.log("user " + users[find].data + " disconnected");
+        // console.log("user " + users[find].data + " disconnected");
         socket.broadcast.emit("checkonline", {
           online: false,
           id: users[find].data
@@ -75,13 +75,13 @@ module.exports.sockets = function(http) {
         });
       }
       if (find !== undefined) {
-        console.log(true);
+        //console.log(true);
         socket.emit("checkonline", {
           online: true,
           id: id
         });
       } else {
-        console.log(false);
+        //console.log(false);
         socket.emit("checkonline", {
           online: false,
           id: id
@@ -99,7 +99,7 @@ module.exports.sockets = function(http) {
           }
         });
       }
-      console.log(listOutput);
+      //console.log(listOutput);
       socket.emit("checklist", listOutput);
     });
     socket.on("sendmessage", message => {
@@ -124,30 +124,63 @@ module.exports.sockets = function(http) {
                       }
                     });
                   }
-                  _socket.emit(
-                    "sendMess",
-                    new Object({
-                      mess: val.content,
-                      sender: sender
-                    })
-                  );
-                  if (lstSocket !== undefined && lstSocket !== null) {
-                    lstSocket.forEach((item, index) => {
-                      _socket.to(item).emit(
-                        "receiveMess",
+                  _provider
+                    .getConInfo(message._id, message.sender)
+                    .then(resultCon => {
+                      //console.log(resultCon);
+                      _socket.emit(
+                        "sendMess",
                         new Object({
                           mess: val.content,
                           sender: sender
                         })
                       );
+                      _socket.emit("refreshList", resultCon);
+                      if (lstSocket !== undefined && lstSocket !== null) {
+                        lstSocket.forEach((item, index) => {
+                          _socket.to(item).emit(
+                            "receiveMess",
+                            new Object({
+                              mess: val.content,
+                              sender: sender
+                            })
+                          );
+                          _socket.to(item).emit("refreshList", resultCon);
+                        });
+                      }
                     });
-                  }
                 }
               });
             }
           });
       }
     });
+    socket.on("onTyping", package => {
+      let lstSocket = [];
+      let par = package.par;
+      let _socket = socket;
+      for (let i = 0; i < users.length; i++) {
+        par.forEach(item => {
+          if (JSON.stringify(users[i].data) == JSON.stringify(item._id)) {
+            lstSocket.push(users[i].id);
+          }
+        });
+      }
+      if (lstSocket !== undefined && lstSocket !== null) {
+        lstSocket.forEach((item, index) => {
+          _socket.to(item).emit(
+            "checkTyping",
+            new Object({
+              status: package.status,
+              sender: package.sender,
+              roomid: package.roomid
+            })
+          );
+        });
+      }
+    });
+
+    socket.on("sendcalling", message => {});
   });
   return io;
 };

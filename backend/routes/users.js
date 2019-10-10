@@ -5,6 +5,7 @@ var _provider = require("../db/provider/UserProvider");
 var fs = require("fs");
 var config = require("../lib/config");
 const path = require("path");
+const utils = require("../lib/utils");
 
 /* GET users listing. */
 router.get("/", function(req, res, next) {
@@ -24,6 +25,13 @@ router.post("/userinfo", (req, res, next) => {
     .findUsrById(userid)
     .then(val => {
       val.password = "";
+      val.image =
+        val.image !== "" && val.image !== null && val.image !== undefined
+          ? utils.encodeUrl(val.image)
+          : utils.encodeUrl(
+              path.resolve(__dirname, "../public/images/") +
+                "/default-avatar.jpg"
+            );
       return res.json({
         success: true,
         content: val

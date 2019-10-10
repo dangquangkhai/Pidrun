@@ -8,10 +8,14 @@
                 <div class="tab-pane fade" id="members">
                     <div class="search">
                         <form class="form-inline position-relative">
-                            <input type="search" class="form-control" id="people" placeholder="Search for people...">
-                            <button type="button" class="btn btn-link loop"><i class="material-icons">search</i></button>
+                            <input type="search" class="form-control" id="people" placeholder="Search for people..." />
+                            <button type="button" class="btn btn-link loop">
+                                <i class="material-icons">search</i>
+                            </button>
                         </form>
-                        <button class="btn create" v-on:click="allowAddFr = true"><i class="material-icons">person_add</i></button>
+                        <button class="btn create" v-on:click="allowAddFr = true">
+                            <i class="material-icons">person_add</i>
+                        </button>
                     </div>
                     <div class="list-group sort">
                         <button class="btn filterMembersBtn active show" data-toggle="list" data-filter="all">All</button>
@@ -22,7 +26,7 @@
                         <h1>Contacts</h1>
                         <div class="list-group" id="contacts" role="tablist">
                             <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -35,7 +39,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -48,7 +52,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -61,7 +65,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -74,7 +78,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterMembers all online contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Harmony" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Harmony" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -87,7 +91,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterMembers all offline contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons offline">fiber_manual_record</i>
                                 </div>
@@ -100,7 +104,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterMembers all offline contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons offline">fiber_manual_record</i>
                                 </div>
@@ -113,7 +117,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterMembers all offline contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Ryan" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Ryan" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons offline">fiber_manual_record</i>
                                 </div>
@@ -126,7 +130,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterMembers all offline contact" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Mildred" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Mildred" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons offline">fiber_manual_record</i>
                                 </div>
@@ -146,10 +150,14 @@
                 <div id="discussions" class="tab-pane fade active show">
                     <div class="search">
                         <form class="form-inline position-relative">
-                            <input type="search" class="form-control" id="conversations" placeholder="Search for conversations...">
-                            <button type="button" class="btn btn-link loop"><i class="material-icons">search</i></button>
+                            <input type="search" class="form-control" id="conversations" placeholder="Search for conversations..." />
+                            <button type="button" class="btn btn-link loop">
+                                <i class="material-icons">search</i>
+                            </button>
                         </form>
-                        <button class="btn create" v-on:click="showchat = true"><i class="material-icons">create</i></button>
+                        <button class="btn create" v-on:click="showchat = true">
+                            <i class="material-icons">create</i>
+                        </button>
                     </div>
                     <div class="list-group sort">
                         <button class="btn filterDiscussionsBtn active show" data-toggle="list" data-filter="all">All</button>
@@ -158,9 +166,9 @@
                     </div>
                     <div class="discussions">
                         <h1>Discussions</h1>
-                        <div class="list-group" id="chats" role="tablist">
+                        <transition-group name="flip-list" tag="div" class="list-group" id="chats" role="tablist">
                             <a class="filterDiscussions all single show" v-for="(item, index) in lstCon" v-on:click="getMessage(item, index)" :key='"key-"+item.conversation._id + "-" + index' :id='"id-"+item.conversation._id + "-" + index'>
-                                <img class="avatar-md" :src="CON_CONTROLLER + '/getimage/' + item.conversation.image" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" :src="CON_CONTROLLER + '/getimage/' + item.conversation.image" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                                 <div class="status" v-if="item.conversation.conType == 'PrivateChat'">
                                     <i class="material-icons online" v-if="item.par[0].status == 'Online'" :id="'onlineCon-' +item.conversation._id + '-' + index">fiber_manual_record</i>
                                     <i class="material-icons offline" v-if="item.par[0].status == 'Offline'" :id="'onlineCon-' +item.conversation._id + '-' + index">fiber_manual_record</i>
@@ -174,7 +182,7 @@
                                     <p>{{generateMess(item)}}</p>
                                 </div>
                             </a>
-                        </div>
+                        </transition-group>
                     </div>
                 </div>
                 <!-- End of Discussions -->
@@ -182,8 +190,10 @@
                 <div id="notifications" class="tab-pane fade">
                     <div class="search">
                         <form class="form-inline position-relative">
-                            <input type="search" class="form-control" id="notice" placeholder="Filter notifications...">
-                            <button type="button" class="btn btn-link loop"><i class="material-icons filter-list">filter_list</i></button>
+                            <input type="search" class="form-control" id="notice" placeholder="Filter notifications..." />
+                            <button type="button" class="btn btn-link loop">
+                                <i class="material-icons filter-list">filter_list</i>
+                            </button>
                         </form>
                     </div>
                     <div class="list-group sort">
@@ -195,7 +205,7 @@
                         <h1>Notifications</h1>
                         <div class="list-group" id="alerts" role="tablist">
                             <a href="#" class="filterNotifications all latest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -205,7 +215,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterNotifications all latest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -215,7 +225,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterNotifications all latest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -225,7 +235,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterNotifications all latest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -235,7 +245,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterNotifications all latest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons online">fiber_manual_record</i>
                                 </div>
@@ -245,7 +255,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterNotifications all oldest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons offline">fiber_manual_record</i>
                                 </div>
@@ -255,7 +265,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterNotifications all oldest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons offline">fiber_manual_record</i>
                                 </div>
@@ -265,7 +275,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterNotifications all oldest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons offline">fiber_manual_record</i>
                                 </div>
@@ -275,7 +285,7 @@
                                 </div>
                             </a>
                             <a href="#" class="filterNotifications all oldest notification" data-toggle="list">
-                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+                                <img class="avatar-md" src="swipe/img/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
                                 <div class="status">
                                     <i class="material-icons offline">fiber_manual_record</i>
                                 </div>
@@ -292,8 +302,10 @@
                 <div class="tab-pane fade" id="settings">
                     <div class="settings">
                         <div class="profile">
-                            <img class="avatar-xl" src="swipe/img/avatars/avatar-male-1.jpg" alt="avatar">
-                            <h1><a href="#">Michael Knudsen</a></h1>
+                            <img class="avatar-xl" src="swipe/img/avatars/avatar-male-1.jpg" alt="avatar" />
+                            <h1>
+                                <a href="#">Michael Knudsen</a>
+                            </h1>
                             <span>Helena, Montana</span>
                             <div class="stats">
                                 <div class="item">
@@ -326,9 +338,9 @@
                                     <div class="content">
                                         <div class="upload">
                                             <div class="data">
-                                                <img class="avatar-xl" src="swipe/img/avatars/avatar-male-1.jpg" alt="image">
+                                                <img class="avatar-xl" src="swipe/img/avatars/avatar-male-1.jpg" alt="image" />
                                                 <label>
-                                                    <input type="file">
+                                                    <input type="file" />
                                                     <span class="btn button">Upload avatar</span>
                                                 </label>
                                             </div>
@@ -337,25 +349,34 @@
                                         <form>
                                             <div class="parent">
                                                 <div class="field">
-                                                    <label for="firstName">First name <span>*</span></label>
-                                                    <input type="text" class="form-control" id="firstName" placeholder="First name" value="Michael" required>
+                                                    <label for="firstName">
+                                                        First name
+                                                        <span>*</span>
+                                                    </label>
+                                                    <input type="text" class="form-control" id="firstName" placeholder="First name" value="Michael" required />
                                                 </div>
                                                 <div class="field">
-                                                    <label for="lastName">Last name <span>*</span></label>
-                                                    <input type="text" class="form-control" id="lastName" placeholder="Last name" value="Knudsen" required>
+                                                    <label for="lastName">
+                                                        Last name
+                                                        <span>*</span>
+                                                    </label>
+                                                    <input type="text" class="form-control" id="lastName" placeholder="Last name" value="Knudsen" required />
                                                 </div>
                                             </div>
                                             <div class="field">
-                                                <label for="email">Email <span>*</span></label>
-                                                <input type="email" class="form-control" id="email" placeholder="Enter your email address" value="michael@gmail.com" required>
+                                                <label for="email">
+                                                    Email
+                                                    <span>*</span>
+                                                </label>
+                                                <input type="email" class="form-control" id="email" placeholder="Enter your email address" value="michael@gmail.com" required />
                                             </div>
                                             <div class="field">
                                                 <label for="password">Password</label>
-                                                <input type="password" class="form-control" id="password" placeholder="Enter a new password" value="password" required>
+                                                <input type="password" class="form-control" id="password" placeholder="Enter a new password" value="password" required />
                                             </div>
                                             <div class="field">
                                                 <label for="location">Location</label>
-                                                <input type="text" class="form-control" id="location" placeholder="Enter your location" value="Helena, Montana" required>
+                                                <input type="text" class="form-control" id="location" placeholder="Enter your location" value="Helena, Montana" required />
                                             </div>
                                             <button class="btn btn-link w-100">Delete Account</button>
                                             <button type="submit" class="btn button w-100">Apply</button>
@@ -380,11 +401,11 @@
                                             <p>When you clear your conversation history, the messages will be deleted from your own device.</p>
                                             <p>The messages won't be deleted or cleared on the devices of the people you chatted with.</p>
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="same-address">
+                                                <input type="checkbox" class="custom-control-input" id="same-address" />
                                                 <label class="custom-control-label" for="same-address">Hide will remove your chat history from the recent list.</label>
                                             </div>
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="save-info">
+                                                <input type="checkbox" class="custom-control-input" id="save-info" />
                                                 <label class="custom-control-label" for="save-info">Delete will remove your chat history from the device.</label>
                                             </div>
                                             <button type="submit" class="btn button w-100">Clear blah-blah</button>
@@ -411,7 +432,7 @@
                                                 <p>You can set up Swipe to receive notifications when you have new messages.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -421,7 +442,7 @@
                                                 <p>If enabled shows a red badge on the Swipe app icon when you have unread messages.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -431,7 +452,7 @@
                                                 <p>Flashes the Swipe app on mobile in your taskbar when you have new notifications.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -441,7 +462,7 @@
                                                 <p>Set the app to alert you via notification sound when you have unread messages.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -451,7 +472,7 @@
                                                 <p>Vibrate when receiving new messages (Ensure system vibration is also enabled).</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -461,7 +482,7 @@
                                                 <p>When someone send you a text message you will receive alert via notification light.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -482,46 +503,46 @@
                                 <div class="collapse" id="collapseFour" aria-labelledby="headingFour" data-parent="#accordionSettings">
                                     <div class="content">
                                         <div class="app">
-                                            <img src="swipe/img/integrations/slack.svg" alt="app">
+                                            <img src="swipe/img/integrations/slack.svg" alt="app" />
                                             <div class="permissions">
                                                 <h5>Skrill</h5>
                                                 <p>Read, Write, Comment</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
                                         <div class="app">
-                                            <img src="swipe/img/integrations/dropbox.svg" alt="app">
+                                            <img src="swipe/img/integrations/dropbox.svg" alt="app" />
                                             <div class="permissions">
                                                 <h5>Dropbox</h5>
                                                 <p>Read, Write, Upload</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
                                         <div class="app">
-                                            <img src="swipe/img/integrations/drive.svg" alt="app">
+                                            <img src="swipe/img/integrations/drive.svg" alt="app" />
                                             <div class="permissions">
                                                 <h5>Google Drive</h5>
                                                 <p>No permissions set</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
                                         <div class="app">
-                                            <img src="swipe/img/integrations/trello.svg" alt="app">
+                                            <img src="swipe/img/integrations/trello.svg" alt="app" />
                                             <div class="permissions">
                                                 <h5>Trello</h5>
                                                 <p>No permissions set</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -547,7 +568,7 @@
                                                 <p>The dark mode is applied to core areas of the app that are normally displayed as light.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round mode"></span>
                                             </label>
                                         </div>
@@ -570,7 +591,7 @@
                                         <div class="language">
                                             <label for="country">Language</label>
                                             <select class="custom-select" id="country" required>
-                                                <option value="">Select an language...</option>
+                                                <option value>Select an language...</option>
                                                 <option>English, UK</option>
                                                 <option>English, US</option>
                                             </select>
@@ -597,7 +618,7 @@
                                                 <p>Automatically scan and delete direct messages you receive from everyone that contain explict content.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -607,7 +628,7 @@
                                                 <p>If enabled scans direct messages from everyone unless they are listed as your friend.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -617,7 +638,7 @@
                                                 <p>If enabled anyone in or out your friends of friends list can send you a friend request.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -627,7 +648,7 @@
                                                 <p>Only your friends or your mutual friends will be able to send you a friend reuqest.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -637,7 +658,7 @@
                                                 <p>This settings allows us to use and process information for analytical purposes.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -647,7 +668,7 @@
                                                 <p>This settings allows us to use your information to customize Swipe for you.</p>
                                             </div>
                                             <label class="switch">
-                                                <input type="checkbox">
+                                                <input type="checkbox" />
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -683,14 +704,14 @@
 <script>
 import Createchat from "@/components/createchat.vue";
 import Addfriend from "@/components/addfriend.vue";
-var moment = require('moment');
+var moment = require("moment");
 
 export default {
     name: "Sidebar",
     props: ["name", "keysidebar"],
     components: {
         Createchat,
-        Addfriend,
+        Addfriend
     },
     watch: {
         // name: function(val){
@@ -701,7 +722,7 @@ export default {
         keysidebar: function (oldV, newV) {
             if (newV !== oldV) {
                 this.selectSideBar(this.name);
-                this.$emit('resetkeybar');
+                this.$emit("resetkeybar");
             }
         }
     },
@@ -709,9 +730,7 @@ export default {
         connect() {},
         count(val) {},
         message(data) {},
-        checkonline(data) {
-
-        },
+        checkonline(data) {},
         rechecklist(data) {
             console.log(data);
             if (data.recheck) {
@@ -723,11 +742,11 @@ export default {
             this.listCheckActive = data;
             let listUpdate = [];
             for (let i = 0; i < this.lstCon.length; i++) {
-                if (this.lstCon[i].conversation.conType == 'PrivateChat') {
+                if (this.lstCon[i].conversation.conType == "PrivateChat") {
                     let updateCon = new Object(this.lstCon[i]);
                     updateCon.par[0].status = "Offline";
                     this.lstCon.splice(i, 1, updateCon);
-                    this.listCheckActive.forEach((item) => {
+                    this.listCheckActive.forEach(item => {
                         if (this.lstCon[i].par[0]._id == item && !listUpdate.includes(i)) {
                             listUpdate.push(i);
                         }
@@ -748,6 +767,25 @@ export default {
                 }
             }
             //console.log(data);
+        },
+        refreshList(data) {
+            console.log(data);
+            let arr = new Object(this.lstCon);
+            let find = arr.findIndex(item => {
+                return item.conversation._id == data.conversation._id;
+            });
+            if (find > -1) {
+                arr.splice(find, 1);
+            }
+            arr.unshift(data);
+            this.lstCon = arr;
+            for (let i = 0; i < this.lstCon.length; i++) {
+                if (this.lstCon[i].conversation.conType == "PrivateChat") {
+                    this.listActive.push(this.lstCon[i].par[0]._id);
+                    this.lstCon[i].par[0].status = "Offline";
+                }
+            }
+            this.$socket.emit("checklist", this.listActive);
         }
     },
     data() {
@@ -758,8 +796,8 @@ export default {
             CON_CONTROLLER: this.$api.getApi() + "/conversation",
             lstCon: [],
             listActive: [],
-            listCheckActive: [],
-        }
+            listCheckActive: []
+        };
     },
     mounted() {
         this.getConv();
@@ -826,19 +864,22 @@ export default {
                     title = item.par[0].firstname + " " + item.par[0].lastname;
                     break;
                 case "GroupChat":
-                    if (item.conversation.title !== null && item.conversation.title !== undefined && item.conversation.title !== "") {
+                    if (
+                        item.conversation.title !== null &&
+                        item.conversation.title !== undefined &&
+                        item.conversation.title !== ""
+                    ) {
                         title = item.conversation.title;
                     } else {
                         item.par.forEach((val, index) => {
                             let fullname = val.par.firstname + " " + val.par.lastname;
                             title += fullname + ", ";
-                        })
+                        });
                     }
                     break;
                 default: {
                     return "";
                 }
-
             }
             return title;
         },
@@ -858,10 +899,12 @@ export default {
             });
             this.$emit("getcon", item);
         }
-    },
-}
+    }
+};
 </script>
 
 <style>
-
+.flip-list-move {
+    transition: transform 1s;
+}
 </style>

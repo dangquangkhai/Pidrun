@@ -222,6 +222,7 @@ class UserProvider {
         content: "User not exist"
       });
     }
+    console.log(find);
     if (find.content.password == sha256(pass)) {
       if (find.content.isactive && !find.content.isblock) {
         find.content.password = "";

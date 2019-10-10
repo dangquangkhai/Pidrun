@@ -5,7 +5,12 @@
       <div class="inside">
         <div class="nav nav-tab menu">
           <button class="btn">
-            <img class="avatar-xl" id="nav_img" :src="user_dt" alt="avatar" />
+            <img
+              class="avatar-xl"
+              id="nav_img"
+              :src="CON_CONTROLLER + '/getimage/' + usrdata.image"
+              alt="avatar"
+            />
           </button>
           <!-- <a href="#members" >
             <i class="material-icons">account_circle</i>
@@ -50,11 +55,11 @@
 <script>
 import Navbutton from "@/components/navbutton.vue";
 
-import {TokenService} from "../services/storage.service";
+import { TokenService } from "../services/storage.service";
 
 export default {
   name: "Navigation",
-  props: ["path","usrdata"],
+  props: ["path", "usrdata"],
   components: {
     Navbutton
   },
@@ -83,12 +88,12 @@ export default {
           type: "a",
           extend: "f-grow1"
         },
-        {
-          name: "darkmode",
-          icon: "brightness_2",
-          type: "button",
-          extend: ""
-        },
+        // {
+        //   name: "darkmode",
+        //   icon: "brightness_2",
+        //   type: "button",
+        //   extend: ""
+        // },
         {
           name: "settings",
           icon: "settings",
@@ -98,22 +103,22 @@ export default {
       ],
       user_dt: null,
       USR_CONTROLLER: this.$api.getApi() + "/users",
+      CON_CONTROLLER: this.$api.getApi() + "/conversation"
     };
   },
   watch: {
-    usrdata: function(oldVal, newVal){
+    usrdata: function(oldVal, newVal) {
       console.log(this.usrdata);
       if (newVal !== undefined && newVal !== null && oldVal !== newVal) {
         this.user_dt = newVal;
         console.log(newVal);
-        for(var item in newVal)
-        {
-          console.log( item.toString() + ":" + newVal[item]);
+        for (var item in newVal) {
+          console.log(item.toString() + ":" + newVal[item]);
         }
       }
     },
     user_dt: function(val) {
-            if (val !== undefined && val !== null) {
+      if (val !== undefined && val !== null) {
       }
     }
   },
@@ -122,7 +127,7 @@ export default {
       name = "Navbutton-" + this.path;
       this.$refs[name][0].getName();
     }
-    this.getUsrImg();
+    //this.getUsrImg();
   },
   methods: {
     selmenu: function(name) {
@@ -131,20 +136,20 @@ export default {
     getUsrImg: function() {
       this.$http
         .get(this.USR_CONTROLLER + "/getusrimage", {
-          responseType: "arraybuffer",
+          responseType: "arraybuffer"
         })
         .then(res => {
           //this.userinfo.image = res.data;
-          let blob = new Blob([res.data], {type: 'image/jpg'});
+          let blob = new Blob([res.data], { type: "image/jpg" });
           let reader = new FileReader();
           reader.readAsDataURL(blob); // converts the blob to base64 and calls onload
-          reader.onload = (e) => {
+          reader.onload = e => {
             this.user_dt = reader.result;
-          }
+          };
         })
         .catch();
     },
-    logout: function () {
+    logout: function() {
       TokenService.removeToken();
       location.reload();
     }
@@ -153,4 +158,10 @@ export default {
 </script>
 
 <style>
+@media (max-width: 991px) {
+  .changeSize {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
 </style>

@@ -44,7 +44,6 @@ router.get("/getusrimage/:url", (req, res, next) => {
 router.get("/getimage/:url", (req, res, next) => {
   let encodedUrl = req.params.url;
   let decodeUrl = utils.decodeUrl(encodedUrl);
-  console.log(decodeUrl);
   res.sendFile(decodeUrl);
 });
 

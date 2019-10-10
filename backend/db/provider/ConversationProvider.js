@@ -370,17 +370,24 @@ class ConversationProvider {
             parIdOfCon.forEach(item => {
               parOfCon.push(item.UserId);
             });
+            console.log(parIdOfCon);
             let finalParInfo = await Users.find({ _id: { $in: parOfCon } })
               .select("_id email firstname lastname image")
               .then(val => {
                 let ouput = [];
-                for (let i = 0; i < parOfCon.length; i++) {
-                  ouput.push(
-                    new Object({
-                      conId: parIdOfCon[i].ConversationId,
-                      usr: val[i]
-                    })
-                  );
+                for (let i = 0; i < val.length; i++) {
+                  parIdOfCon.forEach(item => {
+                    if (
+                      JSON.stringify(item.UserId) === JSON.stringify(val[i]._id)
+                    ) {
+                      ouput.push(
+                        new Object({
+                          conId: item.ConversationId,
+                          usr: val[i]
+                        })
+                      );
+                    }
+                  });
                 }
                 return ouput;
               })
@@ -533,13 +540,19 @@ class ConversationProvider {
               .select("_id email firstname lastname")
               .then(val => {
                 let ouput = [];
-                for (let i = 0; i < parOfCon.length; i++) {
-                  ouput.push(
-                    new Object({
-                      conId: parIdOfCon[i].ConversationId,
-                      usr: val[i]
-                    })
-                  );
+                for (let i = 0; i < val.length; i++) {
+                  parIdOfCon.forEach(item => {
+                    if (
+                      JSON.stringify(item.UserId) === JSON.stringify(val[i]._id)
+                    ) {
+                      ouput.push(
+                        new Object({
+                          conId: item.ConversationId,
+                          usr: val[i]
+                        })
+                      );
+                    }
+                  });
                 }
                 return ouput;
               })
@@ -640,6 +653,93 @@ class ConversationProvider {
         return val;
       });
   }
+  async getConInfo(conid, UserId) {
+    return await Conversation.findById(conid).then(async val => {
+      let findPar = [];
+      let par = [];
+      let listParId = [];
+      let mess = null;
+      let senderInfo = null;
+      let conversation = null;
+      let result = null;
+
+      findPar = await Participants.find({
+        ConversationId: { $eq: conid }
+      })
+        .select("UserId")
+        .then(val => {
+          return val;
+        })
+        .catch(err => {
+          return [];
+        });
+      findPar.forEach(item => {
+        listParId.push(item.UserId);
+      });
+      conversation = new Object(val);
+      switch (conversation.conType) {
+        case "PrivateChat":
+          let parti = new Object(par[0]);
+          parti.image =
+            parti.image !== null &&
+            parti.image !== undefined &&
+            parti.image !== ""
+              ? parti.image
+              : path.resolve(__dirname, "../../public/images/") +
+                "/default-avatar.jpg";
+          conversation.image = utils.encodeUrl(parti.image);
+          break;
+        case "GroupChat":
+          conversation.image =
+            conversation.image !== null &&
+            conversation.image !== undefined &&
+            conversation.image !== ""
+              ? utils.encodeUrl(conversation.image)
+              : utils.encodeUrl(
+                  path.resolve(__dirname, "../../public/images/") +
+                    "/default-group.png"
+                );
+          break;
+      }
+      mess = await Messsages.findOne({ _id: val.lastMessageId })
+        .then(val => {
+          return val;
+        })
+        .catch(err => {
+          return null;
+        });
+      par = await Users.find({ _id: { $in: listParId } })
+        .select("_id email firstname lastname image")
+        .then(val => {
+          let arr = [];
+          val.forEach(item => {
+            let obj = new Object(item);
+            obj.image =
+              obj.image !== "" && obj.image !== null && obj.image !== undefined
+                ? utils.encodeUrl(obj.image)
+                : utils.encodeUrl(
+                    path.resolve(__dirname, "../../public/images/") +
+                      "/default-avatar.jpg"
+                  );
+            arr.push(obj);
+          });
+          return arr;
+        });
+      console.log(par);
+      let findSender = par.findIndex(item => {
+        return JSON.stringify(UserId) == JSON.stringify(item._id);
+      });
+      senderInfo = new Object(par[findSender]);
+      par.splice(findSender, 1);
+      result = new Object({
+        conversation: conversation,
+        mess: mess,
+        senderInfo: senderInfo,
+        par: par
+      });
+      return await result;
+    });
+  }
 }
 
 function convertDate(date) {
@@ -729,3 +829,6 @@ let _provider = new ConversationProvider();
 //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJleUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMWNtd2lPaUl2YUc5dFpTOXJhR0ZwTDFCeWIycGxZM1J6TDFCcFpISjFiaTlpWVdOclpXNWtMM0IxWW14cFl5OXBiV0ZuWlhNdlpHVm1ZWFZzZEMxaGRtRjBZWEl1YW5Cbklpd2lhV0YwSWpveE5UY3dOREkzT0RjeWZRLnZmTUM4MWJnWDM2YlA5Z1hvSy1ZcHBTVXcwOVNQdWJlNWo4dC1JdFVYdVUiLCJpYXQiOjE1NzA0Mjc4NzJ9.Q3TBV5Ow6jtoBpmE-vfklrcgLexO75MdvkGlhrkiafE"
 //   )
 // );
+// _provider.getConInfo("5d836eb86408de44c79391f2", "5d51347486f7b41cbc039314").then(val => {
+//   console.log(val);
+// });

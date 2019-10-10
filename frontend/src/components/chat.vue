@@ -127,6 +127,62 @@
                     </div>
                   </div>
                 </div>
+                <transition name="fade">
+                  <div class="message" v-if="status">
+                    <img
+                      v-if="coninfo.conversation.conType == 'PrivateChat' && listTyping.length > 0"
+                      class="avatar-md"
+                      :src="CON_CONTROLLER + '/getimage/' + listTyping[0].image"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title
+                      :alt="'avatar' + listTyping[0].firstname"
+                      :data-original-title="listTyping[0].firstname"
+                    />
+                    <div class="text-main">
+                      <div class="text-group">
+                        <div class="text typing">
+                          <div class="wave">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </transition>
+
+                <!-- <div class="message" v-show="status">
+                  <img
+                    class="avatar-md"
+                    src="swipe/img/avatars/avatar-female-5.jpg"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title
+                    alt="avatar"
+                    data-original-title="Keith"
+                    aria-describedby="tooltip779523"
+                  />
+                  <div class="text-main">
+                    <div class="text-group">
+                      <div class="text">
+                        <div class="attachment">
+                          <button class="btn attach">
+                            <i class="material-icons md-18">insert_drive_file</i>
+                          </button>
+                          <div class="file">
+                            <h5>
+                              <a href="#">Tenacy Agreement.pdf</a>
+                            </h5>
+                            <span>24kb Document</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <span>11:07 PM</span>
+                  </div>
+                </div>-->
               </div>
             </div>
           </div>
@@ -138,6 +194,7 @@
                     class="form-control"
                     placeholder="Start typing for reply..."
                     rows="1"
+                    id="usermessage"
                     v-model="message"
                     v-on:keydown.enter.exact.prevent
                     v-on:keyup.enter.exact="sendMessage()"
@@ -218,7 +275,9 @@ export default {
     return {
       CON_CONTROLLER: this.$api.getApi() + "/conversation",
       conMess: [],
-      message: null
+      message: null,
+      listTyping: [],
+      status: false
     };
   },
   watch: {
@@ -226,6 +285,7 @@ export default {
       handler(newVal, oldVal) {
         if (newVal !== oldVal && newVal !== null) {
           this.getMess(this.coninfo.conversation._id);
+
           console.log("Change value");
         }
       },
@@ -251,7 +311,6 @@ export default {
       this.$forceUpdate();
     },
     sendMess(data) {
-      console.log(data);
       if (data !== null && data !== undefined) {
         this.addMessage(data);
       }
@@ -259,6 +318,32 @@ export default {
     receiveMess(data) {
       if (data !== null && data !== undefined) {
         this.addMessage(data);
+      }
+    },
+    checkTyping(data) {
+      if (
+        data !== null &&
+        data !== undefined &&
+        this.coninfo !== null &&
+        this.coninfo !== undefined
+      ) {
+        if (
+          JSON.stringify(data.roomid) ==
+          JSON.stringify(this.coninfo.conversation._id)
+        ) {
+          this.status = data.status;
+          let find = this.listTyping.findIndex(item => {
+            return item._id == data.sender._id;
+          });
+          console.log(data.sender);
+          if (find > -1) {
+            this.listTyping.splice(find, 1, data.sender);
+          } else {
+            this.listTyping.push(data.sender);
+          }
+          this.$forceUpdate();
+          this.gotoBottom();
+        }
       }
     }
   },
@@ -293,8 +378,42 @@ export default {
         });
     },
     showChat() {
+      let _this = this;
       $(document).ready(function() {
         $("#list-chat").addClass("active show");
+        _this.gotoBottom();
+        var timer = null;
+        $("#usermessage").keydown(function() {
+          let packageOn = new Object({
+            par: _this.coninfo.par,
+            sender: _this.usrinfo,
+            status: true,
+            roomid: _this.coninfo.conversation._id
+          });
+          _this.$socket.emit("onTyping", packageOn);
+          clearTimeout(timer);
+          timer = setTimeout(stopTyping, 1000);
+        });
+        function stopTyping() {
+          let packageOff = new Object({
+            par: _this.coninfo.par,
+            sender: _this.usrinfo,
+            status: false,
+            roomid: _this.coninfo.conversation._id
+          });
+          _this.$socket.emit("onTyping", packageOff);
+        }
+        var d = $("div#content");
+        $("div#content").on("scroll", function() {
+          var scrollTop = $(this).scrollTop();
+          if (scrollTop + $(this).innerHeight() >= this.scrollHeight) {
+            console.log("End reach");
+          } else if (scrollTop <= 0) {
+            console.log("Top reached");
+          } else {
+            console.log("");
+          }
+        });
       });
     },
     generateTitle(item) {
@@ -340,6 +459,9 @@ export default {
       return date;
     },
     sendMessage() {
+      if (this.message === null || this.message === undefined) {
+        return;
+      }
       let mess = new Object(this.message);
       let obj = {
         _id: this.coninfo.conversation._id,
@@ -348,6 +470,13 @@ export default {
         sender: this.usrinfo._id
       };
       this.message = null;
+      let packageOff = new Object({
+        par: this.coninfo.par,
+        sender: this.usrinfo,
+        status: false,
+        roomid: this.coninfo.conversation._id
+      });
+      this.$socket.emit("onTyping", packageOff);
       this.$socket.emit("sendmessage", obj);
     },
     isOnline(obj) {
@@ -393,10 +522,17 @@ export default {
           );
           let obj = new Object(this.conMess[find]);
           console.log(obj);
-          // this.conMess.splice(find, 1, obj);
+          this.conMess.splice(find, 1, obj);
         } else {
-          //  this.conMess.push(item);
+          this.conMess.push(item);
         }
+      });
+      this.gotoBottom();
+    },
+    gotoBottom() {
+      $(document).ready(function() {
+        var d = $("div#content");
+        d.scrollTop(d.prop("scrollHeight"));
       });
     }
   }
@@ -404,4 +540,11 @@ export default {
 </script>
 
 <style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 </style>

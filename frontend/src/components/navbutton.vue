@@ -1,5 +1,5 @@
 <template>
-  <div :class="extend">
+  <div :class="extend + ' changeSize'">
     <a
       v-if="type == 'a'"
       :id="name"
@@ -22,15 +22,12 @@
 </template>
 
 <script>
-
 export default {
   name: "Navbutton",
   props: ["name", "icon", "type", "extend"],
   watch: {
-    name: function(val)
-    {
-      if(val  !== null)
-      {
+    name: function(val) {
+      if (val !== null) {
         console.log(val);
         this.getName();
       }
@@ -40,8 +37,12 @@ export default {
     activeClass: function() {
       var _this = this;
       $(document).ready(function() {
-        $(_this.type + ".remove-active > i.material-icons").removeClass("active");
-        $(_this.type + "#" + _this.name + " > i.material-icons").addClass("active");
+        $(_this.type + ".remove-active > i.material-icons").removeClass(
+          "active"
+        );
+        $(_this.type + "#" + _this.name + " > i.material-icons").addClass(
+          "active"
+        );
       });
     },
     getName: function() {
