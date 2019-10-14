@@ -181,6 +181,9 @@ module.exports.sockets = function(http) {
     });
 
     socket.on("sendcalling", message => {});
+    socket.on("requestcall", data => {
+      console.log(data);
+    });
   });
   return io;
 };

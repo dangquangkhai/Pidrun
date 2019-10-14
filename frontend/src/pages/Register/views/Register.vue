@@ -96,7 +96,6 @@
                       name="inputPassword"
                       class="form-control"
                       placeholder="Mật khẩu"
-                      
                       v-model="form.password"
                       data-vv-as="password"
                       v-validate.continutes="'required|min:6'"
@@ -119,7 +118,6 @@
                       name="inputRePassword"
                       class="form-control"
                       placeholder="Nhập lại mật khẩu"
-                      
                       v-model="form.repass"
                       data-vv-as="password confirmation"
                       v-validate="'required|confirmed:inputPassword'"
@@ -166,9 +164,15 @@
           <div class="container">
             <div class="col-md-12">
               <div class="content">
-                <h1>Tạo tài khoản thành công <i class="fa fa-check-circle" aria-hidden="true" style="color:green"></i></h1>
+                <h1>
+                  Tạo tài khoản thành công
+                  <i class="fa fa-check-circle" aria-hidden="true" style="color:green"></i>
+                </h1>
                 <h4>Kiểm tra hộp thư để kích hoạt tài khoản, nếu không có xin hãy check hộp thư spam</h4>
-                <h4>Nhấn vào <a href="#" v-on:click="login()" style="font-weight:1000">đây</a> để đăng nhập</h4>
+                <h4>
+                  Nhấn vào
+                  <a href="#" v-on:click="login()" style="font-weight:1000">đây</a> để đăng nhập
+                </h4>
               </div>
             </div>
           </div>
@@ -193,8 +197,9 @@
   <!-- Layout -->
 </template>
 <style>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
@@ -221,7 +226,7 @@ export default {
       LOGIN_CONTROLLER: this.$api.getApi() + "/account",
       reg_error: null,
       disbleReg: false,
-      regSuccess: false,
+      regSuccess: false
     };
   },
   mounted() {},
@@ -231,33 +236,33 @@ export default {
       location.reload();
     },
     register: function() {
-      this.regSuccess = true;
-      // this.$validator
-      //   .validateAll()
-      //   .then(res => {
-      //     if (res) {
-      //       this.disbleReg = true;
-      //       this.$http
-      //         .post(this.LOGIN_CONTROLLER + "/register", { user: this.form })
-      //         .then(val => {
-      //           if (val.data.success) {
-      //             this.reg_error = null;
-      //             this.regSuccess = true;
-      //           } else {
-      //             //this.login_error = "Email hoặc mật khẩu không đúng";
-      //             this.disbleReg = false;
-      //             this.reg_error = val.data.content;
-      //           }
-      //         })
-      //         .catch(err => {
-      //           this.reg_error = err;
-      //           this.disbleReg - false;
-      //         });
-      //     }
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
+      //this.regSuccess = true;
+      this.$validator
+        .validateAll()
+        .then(res => {
+          if (res) {
+            this.disbleReg = true;
+            this.$http
+              .post(this.LOGIN_CONTROLLER + "/register", { user: this.form })
+              .then(val => {
+                if (val.data.success) {
+                  this.reg_error = null;
+                  this.regSuccess = true;
+                } else {
+                  //this.login_error = "Email hoặc mật khẩu không đúng";
+                  this.disbleReg = false;
+                  this.reg_error = val.data.content;
+                }
+              })
+              .catch(err => {
+                this.reg_error = err;
+                this.disbleReg - false;
+              });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };

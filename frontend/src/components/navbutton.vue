@@ -33,6 +33,7 @@ export default {
       }
     }
   },
+  mounted() {},
   methods: {
     activeClass: function() {
       var _this = this;

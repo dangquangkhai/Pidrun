@@ -6,12 +6,14 @@
       v-if="selectPath !== null"
       :name="selectPath"
       :keysidebar="SidebarKey"
+      :usrinfo="userinfo"
       v-on:resetkeybar="SidebarKey = 0"
       v-on:getcon="getcon"
     ></Sidebar>
     <!-- <Sidebar></Sidebar>
     <Addfriend></Addfriend>-->
-    <Chat :coninfo="conInfo" :usrinfo="userinfo"></Chat>
+    <Chat :coninfo="conInfo" :usrinfo="userinfo" v-on:sendcall="requestcalling"></Chat>
+    <Call :showcall="requestCall"></Call>
   </div>
 </template>
 
@@ -21,6 +23,7 @@ import Navigation from "@/components/navigation.vue";
 import Sidebar from "@/components/sidebar.vue";
 // import Addfriend from "@/components/addfriend.vue";
 import Chat from "@/components/chat.vue";
+import Call from "@/components/call.vue";
 import Axios from "axios";
 let api = require("../../../assets/js/host");
 
@@ -33,7 +36,8 @@ export default {
   components: {
     Navigation,
     Sidebar,
-    Chat
+    Chat,
+    Call
   },
   data() {
     return {
@@ -42,7 +46,9 @@ export default {
       USR_CONTROLLER: this.$api.getApi() + "/users",
       userinfo: {},
       conInfo: null,
-      stremInfo: null
+      stremInfo: null,
+      callStatus: null,
+      requestCall: false
     };
   },
   mounted() {
@@ -112,6 +118,10 @@ export default {
     },
     getcon(obj) {
       this.conInfo = obj;
+    },
+    requestcalling(obj) {
+      console.log(obj);
+      this.requestCall = obj;
     }
   }
 };

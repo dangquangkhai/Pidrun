@@ -150,7 +150,7 @@
                 <div id="discussions" class="tab-pane fade active show">
                     <div class="search">
                         <form class="form-inline position-relative">
-                            <input type="search" class="form-control" id="conversations" placeholder="Search for conversations..." />
+                            <input type="search" class="form-control" id="conversations" placeholder="Tìm kiếm cuộc trò chuyện..." />
                             <button type="button" class="btn btn-link loop">
                                 <i class="material-icons">search</i>
                             </button>
@@ -160,12 +160,12 @@
                         </button>
                     </div>
                     <div class="list-group sort">
-                        <button class="btn filterDiscussionsBtn active show" data-toggle="list" data-filter="all">All</button>
-                        <button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="read">Read</button>
-                        <button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="unread">Unread</button>
+                        <button class="btn filterDiscussionsBtn active show" data-toggle="list" data-filter="all">Tât cả</button>
+                        <button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="read">Đọc</button>
+                        <button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="unread">Chưa đọc</button>
                     </div>
                     <div class="discussions">
-                        <h1>Discussions</h1>
+                        <h1>Hộp trò chuyện</h1>
                         <transition-group name="flip-list" tag="div" class="list-group" id="chats" role="tablist">
                             <a class="filterDiscussions all single show" v-for="(item, index) in lstCon" v-on:click="getMessage(item, index)" :key='"key-"+item.conversation._id + "-" + index' :id='"id-"+item.conversation._id + "-" + index'>
                                 <img class="avatar-md" :src="CON_CONTROLLER + '/getimage/' + item.conversation.image" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar" />
@@ -173,9 +173,9 @@
                                     <i class="material-icons online" v-if="item.par[0].status == 'Online'" :id="'onlineCon-' +item.conversation._id + '-' + index">fiber_manual_record</i>
                                     <i class="material-icons offline" v-if="item.par[0].status == 'Offline'" :id="'onlineCon-' +item.conversation._id + '-' + index">fiber_manual_record</i>
                                 </div>
-                                <div class="new bg-yellow">
+                                <!-- <div class="new bg-yellow">
                                     <span>+7</span>
-                                </div>
+                                </div> -->
                                 <div class="data">
                                     <h5>{{generateTitle(item)}}</h5>
                                     <span>{{generateDate(item)}}</span>
@@ -300,14 +300,14 @@
                 <!-- End of Notifications -->
                 <!-- Start of Settings -->
                 <div class="tab-pane fade" id="settings">
-                    <div class="settings">
+                    <div class="settings" v-if="usrinfo !== undefined && usrinfo !== null">
                         <div class="profile">
-                            <img class="avatar-xl" src="swipe/img/avatars/avatar-male-1.jpg" alt="avatar" />
+                            <img class="avatar-xl" :src=" CON_CONTROLLER + '/getimage/'+ usrinfo.image" alt="avatar" />
                             <h1>
-                                <a href="#">Michael Knudsen</a>
+                                <a href="#">{{ usrinfo.firstname + " " + usrinfo.lastname }}</a>
                             </h1>
-                            <span>Helena, Montana</span>
-                            <div class="stats">
+                            <span>{{usrinfo.email}}</span>
+                            <!-- <div class="stats">
                                 <div class="item">
                                     <h2>122</h2>
                                     <h3>Fellas</h3>
@@ -320,16 +320,16 @@
                                     <h2>1538</h2>
                                     <h3>Posts</h3>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="categories" id="accordionSettings">
-                            <h1>Settings</h1>
+                            <h1>Cài đặt</h1>
                             <!-- Start of My Account -->
                             <div class="category">
                                 <a href="#" class="title collapsed" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     <i class="material-icons md-30 online">person_outline</i>
                                     <div class="data">
-                                        <h5>My Account</h5>
+                                        <h5>Tài khoản của tôit</h5>
                                         <p>Update your profile details</p>
                                     </div>
                                     <i class="material-icons">keyboard_arrow_right</i>
@@ -708,7 +708,7 @@ var moment = require("moment");
 
 export default {
     name: "Sidebar",
-    props: ["name", "keysidebar"],
+    props: ["name", "keysidebar", "usrinfo"],
     components: {
         Createchat,
         Addfriend
@@ -721,9 +721,11 @@ export default {
         // },
         keysidebar: function (oldV, newV) {
             if (newV !== oldV) {
+                console.log(this.name);
                 this.selectSideBar(this.name);
                 this.$emit("resetkeybar");
             }
+
         }
     },
     sockets: {
@@ -800,7 +802,32 @@ export default {
         };
     },
     mounted() {
-        this.getConv();
+        //this.getConv();
+        this.lstCon = [];
+        this.listActive.length = [];
+        this.listCheckActive.length = [];
+        switch(this.name){
+                case "members":
+                    this.Showbar("members");
+                    break;
+                case "notifications":
+                    this.Showbar("notifications");
+                    break;
+                case "settings":
+                    this.Showbar("settings");
+                    break;
+                default:
+                    (async () => {
+                        this.lstCon = [];
+                        this.listActive = [];
+                        this.listCheckActive = [];
+                        console.log(this.lstCon);
+                    })().then(() =>{
+                        this.getConv();
+                    })
+                    
+                    break;
+        }
     },
     methods: {
         enableChat: function () {
@@ -810,6 +837,7 @@ export default {
             this.allowAddFr = true;
         },
         Showbar: function (id) {
+            let _this = this;
             $(document).ready(function () {
                 $("div.tab-pane").fadeOut(100, function () {
                     $("div.tab-pane").removeClass("show active");
@@ -817,7 +845,9 @@ export default {
                 $("div#" + id).fadeIn(100, function () {
                     $("div#" + id).addClass("show active");
                 });
+                
             });
+            this.checkScroll(id);
             this.bar = id;
         },
         selectSideBar: function (val) {
@@ -832,24 +862,52 @@ export default {
                     this.Showbar("settings");
                     break;
                 default:
-                    this.Showbar("discussions");
+                    (async () => {
+                        this.lstCon = [];
+                        this.listActive = [];
+                        this.listCheckActive = [];
+                    })().then(() =>{
+                        this.getConv();
+                    })
+                    
                     break;
             }
         },
-        getConv(nextid = null) {
+        getConv(nextid = null, reset = true, showFristMess = true) {
             this.$http
                 .post(this.CON_CONTROLLER + "/getconv", {
                     nextid: nextid
                 })
                 .then(res => {
                     if (res.data.success) {
-                        this.lstCon = res.data.content;
+                        if (reset) {
+                            this.lstCon = [];
+                            this.listActive = [];
+                            this.listCheckActive = [];   
+                        }
                         let listUsrId = [];
+                        console.log(this.lstCon);
+                        if(this.lstCon.length > 0)
+                        {
+                            if (res.data.content !== undefined) {
+                                res.data.content.forEach((item, index) => {
+                                this.lstCon.push(item);
+                            })     
+                            }
+
+                        }
+                        else{
+                            this.lstCon = res.data.content;
+                        }
                         for (let i = 0; i < this.lstCon.length; i++) {
                             if (this.lstCon[i].conversation.conType == "PrivateChat") {
                                 this.listActive.push(this.lstCon[i].par[0]._id);
                                 this.lstCon[i].par[0].status = "Offline";
                             }
+                        }
+                        if (showFristMess) {
+                             this.Showbar("discussions");
+                             this.getMessage(this.lstCon[0], 0);   
                         }
                         this.$socket.emit("checklist", this.listActive);
                         // this.getUsrImg();
@@ -898,6 +956,34 @@ export default {
                 $("a#id-" + item.conversation._id + "-" + index).addClass("active");
             });
             this.$emit("getcon", item);
+        },
+        checkScroll(id)
+        {
+            console.log("id = "+id);
+            let _this = this;
+            $(document).ready(function () {
+                $("div#"+id).on("scroll", function() {
+                var scrollTop = $(this).scrollTop();
+                if (scrollTop + $(this).innerHeight() >= this.scrollHeight) {
+                    console.log("End reach");
+                    // switch (id) {
+                    //     case "members":
+                    //         break;
+                    //     case "notifications":
+                    //         break;
+                    //     case "settings":
+                    //         break;
+                    //     default:
+                    //         break;
+                    // }
+                } else if (scrollTop <= 0) {
+                    console.log("Top reached");
+                } else {
+                    console.log("");
+                }
+                });
+            });
+
         }
     }
 };

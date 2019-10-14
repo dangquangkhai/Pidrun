@@ -51,7 +51,11 @@
                   <button class="btn connect d-md-block d-none" name="1">
                     <i class="material-icons md-30">phone_in_talk</i>
                   </button>
-                  <button class="btn connect d-md-block d-none" name="1">
+                  <button
+                    v-on:click="SendCall('video')"
+                    class="btn connect d-md-block d-none"
+                    name="1"
+                  >
                     <i class="material-icons md-36">videocam</i>
                   </button>
                   <button class="btn d-md-block d-none">
@@ -70,7 +74,7 @@
                       <button class="dropdown-item connect" name="1">
                         <i class="material-icons">phone_in_talk</i>Voice Call
                       </button>
-                      <button class="dropdown-item connect" name="1">
+                      <button class="dropdown-item connect" name="1" v-on:click="SendCall('video')">
                         <i class="material-icons">videocam</i>Video Call
                       </button>
                       <hr />
@@ -92,6 +96,15 @@
           <div class="content" id="content">
             <div class="container">
               <div class="col-md-12">
+                <div class="date" style="padding-bottom:unset;" v-if="isStop">
+                  <div class="lds-ring" style="margin:auto">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+
                 <div
                   v-for="(item, index) in conMess"
                   :key="'dateKey-' + item.date +'-'+index"
@@ -200,7 +213,7 @@
                     v-on:keyup.enter.exact="sendMessage()"
                     v-on:keydown.enter.shift.exact="newline"
                   ></textarea>
-                  <button class="btn emoticons">
+                  <button class="btn emoticons" id="container1">
                     <i class="material-icons">insert_emoticon</i>
                   </button>
                   <button type="submit" class="btn send" v-on:click="sendMessage()">
@@ -277,13 +290,17 @@ export default {
       conMess: [],
       message: null,
       listTyping: [],
-      status: false
+      status: false,
+      isStop: false,
+      originalArray: []
     };
   },
   watch: {
     coninfo: {
       handler(newVal, oldVal) {
         if (newVal !== oldVal && newVal !== null) {
+          this.originalArray = [];
+          this.conMess = [];
           this.getMess(this.coninfo.conversation._id);
 
           console.log("Change value");
@@ -348,7 +365,7 @@ export default {
     }
   },
   methods: {
-    getMess(conid, messid = null) {
+    getMess(conid, messid = null, showChat = true) {
       this.$http
         .post(this.CON_CONTROLLER + "/getmess", {
           conId: conid,
@@ -356,8 +373,15 @@ export default {
         })
         .then(res => {
           let arr = res.data.content;
+          if (this.originalArray.length > 0) {
+            for (let i = 0; i < arr.length; i++) {
+              this.originalArray.push(new Object(arr[i]));
+            }
+          } else {
+            this.originalArray = arr;
+          }
           // this gives an object with dates as keys
-          const groups = arr.reduce((groups, item) => {
+          const groups = this.originalArray.reduce((groups, item) => {
             const date = this.$moment(item.mess.created).format("DD/MM/YYYY"); //.split('T')[0];
             if (!groups[date]) {
               groups[date] = [];
@@ -374,7 +398,33 @@ export default {
             };
           });
           this.conMess = groupArrays.reverse();
-          this.showChat();
+          // if (this.conMess.length == 0) {
+          //   this.conMess = groupArrays.reverse();
+          // } else {
+          //   groupArrays.forEach(item => {
+          //     let find = this.conMess.findIndex(subItem => {
+          //       return subItem.date == item.date;
+          //     });
+          //     console.log(find);
+          //     if (find > -1) {
+          //       this.conMess[find].child.unshift.apply(
+          //         this.conMess[find].child,
+          //         item.child
+          //       );
+          //       let obj = new Object(this.conMess[find]);
+          //       console.log(obj);
+          //       this.conMess.splice(find, 1, obj);
+          //     } else {
+          //       this.conMess.push(item);
+          //     }
+          //   });
+          //   this.isStop = false;
+          // }
+          if (showChat) {
+            this.showChat();
+          } else {
+            this.isStop = false;
+          }
         });
     },
     showChat() {
@@ -403,6 +453,7 @@ export default {
           });
           _this.$socket.emit("onTyping", packageOff);
         }
+
         var d = $("div#content");
         $("div#content").on("scroll", function() {
           var scrollTop = $(this).scrollTop();
@@ -410,6 +461,7 @@ export default {
             console.log("End reach");
           } else if (scrollTop <= 0) {
             console.log("Top reached");
+            _this.loadMessage();
           } else {
             console.log("");
           }
@@ -534,6 +586,14 @@ export default {
         var d = $("div#content");
         d.scrollTop(d.prop("scrollHeight"));
       });
+    },
+    SendCall(type) {
+      this.$emit("sendcall", true);
+    },
+    loadMessage() {
+      this.isStop = true;
+      let nextid = this.originalArray[this.originalArray.length - 1].mess._id;
+      this.getMess(this.coninfo.conversation._id, nextid, false);
     }
   }
 };
@@ -546,5 +606,41 @@ export default {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 41px;
+  height: 41px;
+  margin: 6px;
+  border: 6px solid #4169e1;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #4169e1 transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

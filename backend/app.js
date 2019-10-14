@@ -11,6 +11,7 @@ var usersRouter = require("./routes/users");
 var accountRouter = require("./routes/account");
 var conversationRouter = require("./routes/conversation");
 const validateUser = require("./lib/auth");
+const ExpressPeerServer = require("peer").ExpressPeerServer;
 var app = express();
 var http = require("http")
   .Server(app)

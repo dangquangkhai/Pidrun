@@ -63,7 +63,9 @@ export default {
   components: {
     Navbutton
   },
-  mounted() {},
+  mounted() {
+    this.selmenu("discussions");
+  },
   watch: {
     path: function(val) {}
   },

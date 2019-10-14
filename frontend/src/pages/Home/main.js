@@ -8,6 +8,8 @@ let api = require("../../assets/js/host");
 import login_router from "../Login/router";
 import io from "socket.io-client";
 import VueSocketIO from "vue-socket.io";
+import VuePeerJS from "vue-peerjs";
+import Peer from "peerjs";
 
 let moment = require("moment");
 
@@ -24,6 +26,7 @@ Vue.use(
     connection: api.getSockApi()
   })
 );
+
 //Vue.prototype.$Socket = socket;
 
 Vue.prototype.$moment = moment;
