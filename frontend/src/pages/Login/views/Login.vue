@@ -67,6 +67,9 @@
                 <div class="form-group">
                   <p style="color: red;">{{login_error}}</p>
                 </div>
+                <div class="forget">
+                  <a href="#" v-on:click="forgetPass()">Quên mật khẩu? Nhấp vào đây</a>
+                </div>
                 <button
                   type="button"
                   class="btn button"
@@ -113,6 +116,7 @@
 import register_router from "../../Register/router";
 import home_router from "../../Home/router";
 import { TokenService } from "../../../services/storage.service";
+import forget_router from "../../ForgetPass/router";
 
 import VeeValidate from "vee-validate";
 
@@ -165,6 +169,10 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    forgetPass: function() {
+      forget_router.push({ name: "index" });
+      location.reload();
     }
   }
 };

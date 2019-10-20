@@ -118,4 +118,62 @@ router.post("/RequestActive", (req, res) => {
     });
 });
 
+router.post("/requestforget", (req, res) => {
+  let email = req.body.email;
+  let info = req.body.info;
+  _provider
+    .requestForget(email, info)
+    .then(val => {
+      return res.json(val);
+    })
+    .catch(err => {
+      return res.json({
+        success: false,
+        content: "Something wrong happen!!"
+      });
+    });
+});
+
+router.post("/forgetcheck", (req, res) => {
+  let key = req.body.key;
+  _provider
+    .checkKeyForget(key)
+    .then(val => {
+      return res.json(val);
+    })
+    .catch(err => {
+      return res.json({
+        success: false,
+        content: "Something wrong happen!!!"
+      });
+    });
+});
+
+router.post("/forgetpass", (req, res) => {
+  let key = req.body.key;
+  let newpass = req.body.newpass;
+  if (
+    key === undefined ||
+    key === null ||
+    newpass === undefined ||
+    newpass === null
+  ) {
+    return res.json({
+      success: false,
+      content: "key or pass is null"
+    });
+  }
+  _provider
+    .forgetPass(key, newpass)
+    .then(val => {
+      return res.json(val);
+    })
+    .catch(err => {
+      return res.json({
+        success: false,
+        content: "Something wrong happen!!!"
+      });
+    });
+});
+
 module.exports = router;

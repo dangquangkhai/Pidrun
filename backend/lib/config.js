@@ -9,7 +9,7 @@ email_server = {
 
 web_host = {
   host: "localhost",
-  port: 3050,
+  port: 8080,
   protocal: "http"
 };
 

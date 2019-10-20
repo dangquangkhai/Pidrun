@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-let activeUserSchema = new Schema({
+let forgetPasswordSchema = new Schema({
   email: {
     type: String,
     required: true,
@@ -22,7 +22,11 @@ let activeUserSchema = new Schema({
   updated: {
     type: Date,
     required: false
+  },
+  requestInfo: {
+    type: Object,
+    required: false
   }
 });
 
-module.exports = mongoose.model("ActiveUser", activeUserSchema);
+module.exports = mongoose.model("ForgetPassword", forgetPasswordSchema);

@@ -10,6 +10,7 @@ var db = mongoose.connection;
 const Users = require("../model/Users");
 const ActiveUser = require("../model/ActiveUser");
 const UserContact = require("../model/UserContact");
+const ForgetPassword = require("../model/ForgetPassword");
 var fs = require("fs");
 var config = require("../../lib/config");
 var nodemailer = require("nodemailer");
@@ -17,12 +18,32 @@ var generate = require("./genStr");
 var sha256 = require("js-sha256").sha256;
 var sendMail = require("./mail");
 const path = require("path");
+var moment = require("moment");
 
 String.prototype.replaceAll = function(search, replacement) {
   var target = this;
   return target.replace(new RegExp(search, "g"), replacement);
 };
+function convertDate(date) {
+  function pad(s) {
+    return s < 10 ? "0" + s : s;
+  }
 
+  let convert_d = new Date(date);
+  return (
+    pad(convert_d.getDate()) +
+    "/" +
+    pad(convert_d.getMonth()) +
+    "/" +
+    convert_d.getFullYear() +
+    " " +
+    pad(convert_d.getHours()) +
+    ":" +
+    pad(convert_d.getMinutes()) +
+    ":" +
+    pad(convert_d.getSeconds())
+  );
+}
 class UserProvider {
   UserProvider() {}
 
@@ -299,7 +320,10 @@ class UserProvider {
           ? _user.firstname + " " + _user.lastname
           : _user.email;
       let template_html = fs.readFileSync(
-        "../../public/template/active-user/content.html",
+        path.resolve(
+          __dirname,
+          "../../public/template/active-user/content.html"
+        ),
         "utf8"
       );
       template_html = template_html.replaceAll("{{name}}", receiver);
@@ -318,6 +342,155 @@ class UserProvider {
         });
     } else {
       return await find;
+    }
+  }
+
+  async requestForget(email, info) {
+    let key = generate(50);
+    let template_html = fs.readFileSync(
+      path.resolve(
+        __dirname,
+        "../../public/template/password-reset/content.html"
+      ),
+      "utf8"
+    );
+    let web_port =
+      config.web.port !== null && config.web.port !== undefined
+        ? ":" + config.web.port
+        : "";
+    let url =
+      config.web.protocal +
+      "://" +
+      config.web.host +
+      web_port +
+      "/forgetpass/index?key=" +
+      key;
+    let user = await Users.findOne({ email: email })
+      .select("_id email firstname lastname")
+      .then(val => {
+        return val;
+      })
+      .catch(err => {
+        return null;
+      });
+    if (user == null) {
+      return await new Object({ success: false, content: "user not found" });
+    }
+    let receiver =
+      user.firstname !== null || user.lastname !== null
+        ? user.firstname + " " + user.lastname
+        : user.email;
+    template_html = template_html.replaceAll("{{name}}", receiver);
+    template_html = template_html.replaceAll("{{action_url}}", url);
+    template_html = template_html.replaceAll(
+      "{{user_ip}}",
+      info !== null && info !== undefined ? info.query : "unknown-location"
+    );
+    template_html = template_html.replaceAll(
+      "{{user_location}}",
+      info !== null && info !== undefined ? info.city : unknown - location
+    );
+    let find = await ForgetPassword.findOneAndUpdate(
+      { email: email },
+      {
+        key: key,
+        updated: new Date(),
+        requestInfo: info
+      }
+    )
+      .then(val => {
+        return val;
+      })
+      .catch(err => {
+        return null;
+      });
+    if (find === undefined || find === null) {
+      console.log(user);
+      let newReq = new ForgetPassword();
+      newReq.email = email;
+      newReq.key = key;
+      newReq.UserId = user._id;
+      newReq.created = new Date();
+      newReq.updated = new Date();
+      newReq.requestInfo = info;
+      return await ForgetPassword.create(newReq)
+        .then(async val => {
+          return await sendMail(
+            email,
+            "Quên mật khẩu | Pidrun Team",
+            "Quên mật khẩu",
+            template_html
+          )
+            .then(() => {
+              return { success: true, content: "Resend success" };
+            })
+            .catch(err => {
+              return { success: false, content: "Resend unsuccess" };
+            });
+        })
+        .catch(err => {
+          console.log(err);
+          return { success: false, content: "create email error!!!" };
+        });
+    } else {
+      return await sendMail(
+        email,
+        "Quên mật khẩu | Pidrun Team",
+        "Quên mật khẩu",
+        template_html
+      )
+        .then(() => {
+          return { success: true, content: "Resend success" };
+        })
+        .catch(err => {
+          return { success: false, content: "Resend unsuccess" };
+        });
+    }
+  }
+
+  async checkKeyForget(key) {
+    return await ForgetPassword.findOne({ key: key })
+      .then(async val => {
+        if (val !== undefined && val !== null) {
+          let compareDate = val.updated.setDate(val.updated.getDate() + 1);
+          let currentDate = new Date();
+          if (currentDate > compareDate) {
+            await ForgetPassword.deleteOne({ _id: val._id });
+            return await new Object({ success: false, content: "Time out" });
+          }
+          return await new Object({ success: true, content: "Found" });
+        }
+        return await new Object({ success: false, content: "Not found" });
+      })
+      .catch(err => {
+        return { success: false, content: "Something happen" };
+      });
+  }
+
+  async forgetPass(key, newPassword) {
+    let find = await ForgetPassword.findOne({ key: key })
+      .then(val => {
+        return val;
+      })
+      .catch(err => {
+        return null;
+      });
+    if (find !== undefined && find !== null) {
+      let compareDate = find.updated.setDate(find.updated.getDate() + 1);
+      let currentDate = new Date();
+      if (currentDate > compareDate) {
+        await ForgetPassword.deleteOne({ _id: find._id });
+        return await new Object({ success: false, content: "Time out" });
+      }
+      await ForgetPassword.deleteOne({ _id: find._id });
+      return await Users.findOneAndUpdate(
+        { _id: find.UserId },
+        { password: sha256(newPassword) }
+      ).then(val => {
+        return { success: true, content: "Update password success" };
+      });
+    } else {
+      return await new Object({ success: false, content: "Not found" });
     }
   }
 
@@ -482,7 +655,7 @@ try {
   // user.firstname = "Khải";
   // user.lastname = "Đặng";
   // user.birthday = new Date(1998, 12, 25);
-  // var _provider = new UserProvider();
+  var _provider = new UserProvider();
   // _provider.searchUser("Pidrun").then(val => {
   //   console.log(val);
   // });
@@ -500,6 +673,26 @@ try {
   //   console.log(Obj);
   // });
   //console.log(num);
+  // let obj = {
+  //   businessName: "",
+  //   businessWebsite: "",
+  //   city: "Ho Chi Minh City",
+  //   continent: "Asia",
+  //   country: "Vietnam",
+  //   countryCode: "VN",
+  //   ipName: "localhost",
+  //   ipType: "Residential",
+  //   isp: "Viettel Group",
+  //   lat: "10.82302",
+  //   lon: "106.62965",
+  //   org: "Viettel Group",
+  //   query: "27.74.255.96",
+  //   region: "Ho Chi Minh",
+  //   status: "success"
+  // };
+  // _provider.requestForget("davidarchuleta789@gmail.com", obj).then(val => {
+  //   console.log(val);
+  // });
 } catch (error) {
   console.log(error);
 }
