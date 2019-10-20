@@ -402,19 +402,21 @@
           <div class="container">
             <div class="col-md-12">
               <div class="bottom">
-                <form class="position-relative w-100">
+                <form class="position-relative w-100" v-on:submit.prevent="onsubmit()">
                   <textarea class="form-control" placeholder="Start typing for reply..." rows="1"></textarea>
                   <button class="btn emoticons">
-                    <i class="material-icons">insert_emoticon</i>
+                    <i class="material-icons" id="emojionearea1"  v-on:click="emoji()">insert_emoticon</i>
+
                   </button>
                   <button type="submit" class="btn send">
                     <i class="material-icons">send</i>
                   </button>
                 </form>
+
                 <label>
                   <input type="file" />
                   <span class="btn attach d-sm-block d-none">
-                    <i class="material-icons">attach_file</i>
+                    <i class="material-icons" >attach_file</i>
                   </span>
                 </label>
               </div>
@@ -615,9 +617,22 @@ export default {
         // alert("oi sou Eduardo M");
         // }
         // console.log(e.target.scrollHeight);
-      }
+      },
+    emoji: function(){
+      $("#emojionearea1").emojioneArea({
+        pickerPosition: "top",
+        filtersPosition: "bottom",
+        tones: false,
+        autocomplete: false,
+        inline: true,
+        hidePickerOnBlur: false
+  });
     },
+
+    },
+
 };
 </script>
 <style>
+
 </style>

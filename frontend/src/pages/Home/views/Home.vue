@@ -43,8 +43,9 @@ export default {
       selectPath: null,
       SidebarKey: 0,
       USR_CONTROLLER: this.$api.getApi() + "/users",
-      userinfo: null
-      stringSetting:null,    };
+      userinfo: null,
+      stringSetting:null,
+      };
   },
   mounted() {
     this.getpath(this.$route.hash);
