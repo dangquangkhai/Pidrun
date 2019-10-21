@@ -661,6 +661,19 @@ class UserProvider {
             return { success: false, content: "Your password is not updated" }
         })
     }
+    async generateURL() {
+        let lstId = await Users.find().select("_id").then(val => {
+                return val
+            }).catch(err => {
+                return [];
+            })
+            // lstId.forEach((item, index) => {
+            //     fs.mkdirSync(config.getHost("Img_Att") + "\\" + item._id);
+            // })
+        lstId.forEach(async(item) => {
+            await Users.updateOne({ _id: item._id }, { image: "\\\\" + item._id + "\\\\" + item._id + ".png" }).then(val => { console.log(val) });
+        })
+    }
 }
 
 module.exports = new UserProvider();
@@ -710,6 +723,7 @@ try {
     // _provider.requestForget("davidarchuleta789@gmail.com", obj).then(val => {
     //   console.log(val);
     // });
+    // _provider.generateURL().then(val => { console.log(val) });
 } catch (error) {
     console.log(error);
 }

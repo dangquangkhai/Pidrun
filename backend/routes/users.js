@@ -27,7 +27,7 @@ router.post("/userinfo", (req, res, next) => {
             val.password = "";
             val.image =
                 val.image !== "" && val.image !== null && val.image !== undefined ?
-                utils.encodeUrl(val.image) :
+                utils.encodeUrl(config.getHost("Img_Att") + val.image) :
                 utils.encodeUrl(
                     path.resolve(__dirname, "../public/images/") +
                     "/default-avatar.jpg"
