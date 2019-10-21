@@ -1,7 +1,7 @@
 
 <template>
   <div class="layout">
-    <Navigation :path="selectPath" v-on:getmenu="getpath" :usrdata="userinfo"></Navigation>
+    <Navigation :path="selectPath" v-on:getmenu="getpath" v-on:click="requestSetting = null;" :usrdata="userinfo"></Navigation>
     <Sidebar
       v-if="selectPath !== null"
       :name="selectPath"
@@ -9,10 +9,17 @@
       :usrinfo="userinfo"
       v-on:resetkeybar="SidebarKey = 0"
       v-on:getcon="getcon"
+      v-on:opensetting="requestSetting = $event"
     ></Sidebar>
     <!-- <Sidebar></Sidebar>
     <Addfriend></Addfriend>-->
-    <Chat :coninfo="conInfo" :usrinfo="userinfo" v-on:sendcall="requestcalling"></Chat>
+    <Chat
+      :coninfo="conInfo"
+      :usrinfo="userinfo"
+      v-on:sendcall="requestcalling"
+      v-if="selectPath !== 'settings'"
+    ></Chat>
+    <FormSetting v-if="selectPath === 'settings'" :name="requestSetting" :usrinfo="userinfo"></FormSetting>
     <Call :showcall="requestCall"></Call>
   </div>
 </template>
@@ -24,6 +31,7 @@ import Sidebar from "@/components/sidebar.vue";
 // import Addfriend from "@/components/addfriend.vue";
 import Chat from "@/components/chat.vue";
 import Call from "@/components/call.vue";
+import FormSetting from "@/components/formsetting.vue";
 import Axios from "axios";
 let api = require("../../../assets/js/host");
 
@@ -37,7 +45,8 @@ export default {
     Navigation,
     Sidebar,
     Chat,
-    Call
+    Call,
+    FormSetting
   },
   data() {
     return {
@@ -48,7 +57,8 @@ export default {
       conInfo: null,
       stremInfo: null,
       callStatus: null,
-      requestCall: false
+      requestCall: false,
+      requestSetting: null
     };
   },
   mounted() {
@@ -92,6 +102,7 @@ export default {
           break;
         case "#settings":
           this.selectPath = "settings";
+          this.resetval();
           this.SidebarUpdate();
           break;
         default:
@@ -99,6 +110,7 @@ export default {
           this.SidebarUpdate();
           break;
       }
+
     },
     SidebarUpdate: function() {
       this.SidebarKey += 1;
@@ -122,6 +134,14 @@ export default {
     requestcalling(obj) {
       console.log(obj);
       this.requestCall = obj;
+    },
+    requestsetting(name) {},
+    resetval(){
+     this.requestSetting = null;
+    },
+    resetChat(){
+      this.userinfo = null;
+      this.conInfo = null;
     }
   }
 };

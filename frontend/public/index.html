@@ -2,37 +2,51 @@
 <html lang="en">
 
 <head>
-		<meta charset="utf-8">
-		<title>Pidrun – The Simplest Chat Platform</title>
-		<meta name="description" content="#">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<!-- Bootstrap core CSS -->
-		<link href="<%= BASE_URL %>swipe/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
-		<!-- Swipe core CSS -->
-		<link href="<%= BASE_URL %>swipe/css/swipe.min.css" type="text/css" rel="stylesheet">
-		<!-- Favicon -->
-		<link href="<%= BASE_URL %>swipe/img/favicon.png" type="image/png" rel="icon">
-		<link href="<%= BASE_URL %>emoji/emojionearea.css" type="image/png" rel="icon">
+    <meta charset="utf-8">
+    <title>Pidrun – The Simplest Chat Platform</title>
+    <meta name="description" content="#">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap core CSS -->
+    <link href="<%= BASE_URL %>swipe/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <!-- Swipe core CSS -->
+    <link href="<%= BASE_URL %>swipe/css/swipe.min.css" type="text/css" rel="stylesheet">
+    <!-- Favicon -->
+    <link href="<%= BASE_URL %>swipe/img/favicon.png" type="image/png" rel="icon">
+    <link href="<%= BASE_URL %>emoji/emojionearea.css" type="image/png">
+    <link href="<%= BASE_URL %>plugins/cropperjs/dist/cropper.min.css" type="text/css" rel="stylesheet">
+    <link href="<%= BASE_URL %>plugins/jquery-toast-plugin/dist/jquery.toast.min.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
 
 
-	    		<!-- Bootstrap/Swipe core JavaScript
+
+    <!-- Bootstrap/Swipe core JavaScript
 		================================================== -->
-		<!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script
-		<script src="<%= BASE_URL %>swipe/js/jquery-3.3.1.slim.min.js"></script>
-		<script>window.jQuery || document.write('<script src="<%= BASE_URL %>swipe/js/vendor/jquery-slim.min.js"><\/script>')</script>
-		<script src="<%= BASE_URL %>swipe/js/vendor/popper.min.js"></script>
-		<script src="<%= BASE_URL %>swipe/js/swipe.min.js"></script>
-		<script src="<%= BASE_URL %>swipe/js/bootstrap.min.js"></script>
-		<script src="<%= BASE_URL %>js/host.js"></script>
-		<script src="<%= BASE_URL %>emoji/emojionearea.js"></script>
-	</head>
-	<body>
-		<main>
-			<div class="layout" id="app">
-			</div> <!-- Layout -->
-		</main>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="<%= BASE_URL %>plugins/jquery/dist/jquery.min.js"></script>
+    <!-- <script src="<%= BASE_URL %>swipe/js/jquery-3.3.1.slim.min.js"></script> -->
+    <script>
+        window.jQuery || document.write('<script src="<%= BASE_URL %>swipe/js/vendor/jquery-slim.min.js"><\/script>')
+    </script>
+    <script src="<%= BASE_URL %>swipe/js/vendor/popper.min.js"></script>
+    <script src="<%= BASE_URL %>swipe/js/swipe.min.js"></script>
+    <script src="<%= BASE_URL %>swipe/js/bootstrap.min.js"></script>
+    <script src="<%= BASE_URL %>js/host.js"></script>
+    <script src="<%= BASE_URL %>emoji/emojionearea.js"></script>
+    <script src="<%= BASE_URL %>plugins/cropperjs/dist/cropper.min.js"></script>
+    <script src="<%= BASE_URL %>plugins/jquery-cropper/dist/jquery-cropper.min.js"></script>
+    <script src="<%= BASE_URL %>plugins/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
+    <style>
 
-	</body>
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="layout" id="app">
+        </div>
+        <!-- Layout -->
+    </main>
+
+</body>
 
 </html>

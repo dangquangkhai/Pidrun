@@ -7,7 +7,6 @@
         class="babble tab-pane fade"
         id="list-chat"
         role="tabpanel"
-        aria-labelledby="list-chat-list"
         v-if="coninfo !== null && coninfo !== undefined"
       >
         <!-- Start of Chat -->
@@ -202,7 +201,7 @@
           <div class="container">
             <div class="col-md-12">
               <div class="bottom">
-                <form class="position-relative w-100" v-on:submit.prevent="sendMessage()">
+                <form class="position-relative w-100" v-on:submit.prevent="">
                   <textarea
                     class="form-control"
                     placeholder="Start typing for reply..."
@@ -213,9 +212,12 @@
                     v-on:keyup.enter.exact="sendMessage()"
                     v-on:keydown.enter.shift.exact="newline"
                   ></textarea>
-                  <button class="btn emoticons" id="container1">
+                  <button class="btn emoticons" id="container1" v-on:click="showEmoji = !showEmoji">
                     <i class="material-icons">insert_emoticon</i>
                   </button>
+                  <transition name="fade">
+                   <picker v-if="showEmoji" v-on:select="addEmoji" :style="{ position: 'absolute', bottom: '20px', left: '20px', 'margin-bottom': '50px' }" :showPreview='false' @mouseleave="showEmoji = false" />                                     
+                  </transition>
                   <button type="submit" class="btn send" v-on:click="sendMessage()">
                     <i class="material-icons">send</i>
                   </button>
@@ -281,23 +283,30 @@
 
 <script>
 import moment from "moment";
+import { Picker } from 'emoji-mart-vue';
+import {LibUtils} from "../assets/js/LibUtils"
 export default {
   name: "Chat",
   props: ["coninfo", "usrinfo"],
+  components:{
+    picker: Picker  
+  },
   data() {
     return {
       CON_CONTROLLER: this.$api.getApi() + "/conversation",
       conMess: [],
-      message: null,
+      message: "",
       listTyping: [],
       status: false,
       isStop: false,
-      originalArray: []
+      originalArray: [],
+      showEmoji: false
     };
   },
   watch: {
     coninfo: {
       handler(newVal, oldVal) {
+        $("#list-chat").addClass("active show");
         if (newVal !== oldVal && newVal !== null) {
           this.originalArray = [];
           this.conMess = [];
@@ -511,7 +520,7 @@ export default {
       return date;
     },
     sendMessage() {
-      if (this.message === null || this.message === undefined) {
+      if (LibUtils.isEmpty(this.message)) {
         return;
       }
       let mess = new Object(this.message);
@@ -594,6 +603,9 @@ export default {
       this.isStop = true;
       let nextid = this.originalArray[this.originalArray.length - 1].mess._id;
       this.getMess(this.coninfo.conversation._id, nextid, false);
+    },
+    addEmoji(emoji){
+      this.message += " " + emoji.native;
     }
   }
 };
@@ -642,5 +654,14 @@ export default {
   100% {
     transform: rotate(360deg);
   }
+}
+.main .chat .content .message .text {
+    display: inline-block;
+    padding: 15px;
+    max-width: 450px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    background-color: rgba(0,0,0,0.1);
+    color: black;
 }
 </style>

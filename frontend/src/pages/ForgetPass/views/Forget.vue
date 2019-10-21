@@ -107,7 +107,7 @@
                       class="form-control"
                       placeholder="Mật khẩu"
                       v-model="form.password"
-                      data-vv-as="password"
+                      data-vv-as="mật khẩu"
                       v-validate.continutes="'required|min:6'"
                       ref="inputPassword"
                     />
@@ -129,7 +129,7 @@
                       class="form-control"
                       placeholder="Nhập lại mật khẩu"
                       v-model="form.repass"
-                      data-vv-as="password confirmation"
+                      data-vv-as="Nhập lại mật khẩu"
                       v-validate="'required|confirmed:inputPassword'"
                     />
                     <button class="btn icon">

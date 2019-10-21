@@ -14,8 +14,8 @@ const validateUser = require("./lib/auth");
 const ExpressPeerServer = require("peer").ExpressPeerServer;
 var app = express();
 var http = require("http")
-  .Server(app)
-  .listen(3002);
+    .Server(app)
+    .listen(3002);
 require("./db/provider/Chat").sockets(http);
 
 app.set("secretKey", "nodeRestApi"); // jwt secret token
@@ -26,7 +26,9 @@ app.set("view engine", "jade");
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
@@ -37,26 +39,26 @@ app.use("/account", accountRouter);
 app.use("/conversation/", conversationRouter);
 
 io.on("connection", function(socket) {
-  socket.emit("news", { hello: "world" });
-  socket.on("my other event", function(data) {
-    console.log(data);
-  });
+    socket.emit("news", { hello: "world" });
+    socket.on("my other event", function(data) {
+        console.log(data);
+    });
 });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+    // render the error page
+    res.status(err.status || 500);
+    res.render("error");
 });
 
 module.exports = app;
