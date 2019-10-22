@@ -20,16 +20,16 @@ path_host = {
     Img_Att: "D:\\Pidrun\\User_Image"
 };
 
-//MongoDB account
-mongodb_url = {
-    path: "mongodb://127.0.0.1/Pidrun"
-};
-
 //Unix, linux or freebsd host
 unix_path_host = {
     root: "/home/" + os.userInfo().username + "/Pidrun",
     Con_Att: "/home/" + os.userInfo().username + "/Pidrun/Conversation_Attachment",
     Img_Att: "/home/" + os.userInfo().username + "/Pidrun/User_Image"
+};
+
+//MongoDB account
+mongodb_url = {
+    path: "mongodb://127.0.0.1/Pidrun"
 };
 
 function getHost(prop_path) {

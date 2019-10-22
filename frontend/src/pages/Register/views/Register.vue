@@ -1,5 +1,6 @@
 <template>
-  <div class="layout" style="font-family: initial;">
+<div>
+  <div class="layout" style="font-family: initial;" v-if="this.state == 'index'">
     <!-- Start of Sign Up -->
     <transition name="fade">
       <div class="main order-md-2" v-if="!regSuccess" id="regFrm">
@@ -52,8 +53,8 @@
                         class="form-control"
                         placeholder="Họ"
                         v-model="form.lastname"
-                        data-vv-as="last name"
-                        v-validate="'alpha'"
+                        data-vv-as="họ"
+                        v-validate="'required'"
                       />
                       <button class="btn icon">
                         <i class="material-icons">person_outline</i>
@@ -67,22 +68,22 @@
                         class="form-control"
                         placeholder="Tên"
                         v-model="form.firstname"
-                        data-vv-as="first name"
-                        v-validate="'alpha'"
+                        data-vv-as="tên"
+                        v-validate="'required'"
                       />
                       <button class="btn icon">
                         <i class="material-icons">person_outline</i>
                       </button>
                     </div>
                   </div>
-                  <div class="form-parent">
-                    <div class="form-group">
+                  <div class="row">
+                    <div class="form-group col-6">
                       <span
                         style="color:red;"
                         v-if="errors.has('inputLastname')"
                       >{{ errors.first('inputLastname') }}</span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-6">
                       <span
                         style="color:red;"
                         v-if="errors.has('inputFirstname')"
@@ -97,7 +98,7 @@
                       class="form-control"
                       placeholder="Mật khẩu"
                       v-model="form.password"
-                      data-vv-as="password"
+                      data-vv-as="mật khẩu"
                       v-validate.continutes="'required|min:6'"
                       ref="inputPassword"
                     />
@@ -119,7 +120,7 @@
                       class="form-control"
                       placeholder="Nhập lại mật khẩu"
                       v-model="form.repass"
-                      data-vv-as="password confirmation"
+                      data-vv-as="nhập lại mật khẩu"
                       v-validate="'required|confirmed:inputPassword'"
                     />
                     <button class="btn icon">
@@ -194,6 +195,134 @@
     </div>
     <!-- End of Sidebar -->
   </div>
+  <div lass="layout" style="font-family: initial;" v-if="state == 'requestactive'">
+      <div class="main order-md-1" >
+        <div class="start">
+          <div class="container">
+            <div class="col-md-12">
+              <transition name="fade">
+                <div class="content" v-if="!activeSuccess">
+                  <h1>Kích hoạt tài khoản</h1>
+                  <p class="reMail">Nhập email bạn đã đăng ký để chúng tôi có thể gửi link kích hoat</p>
+                  <form v-on:submit.prevent="requestActive()">
+                    <div class="form-group">
+                      <input
+                        type="email"
+                        id="inputEmail"
+                        class="form-control"
+                        placeholder="Email"
+                        required
+                        v-model="form.email"
+                        name="emailuser"
+                        data-vv-as="email"
+                        v-validate.continutes="'required|email'"
+                      />
+                      <button class="btn icon">
+                        <i class="material-icons">mail_outline</i>
+                      </button>
+                    </div>
+                    <div class="form-group">
+                      <span
+                        style="color:red;"
+                        v-if="errors.has('emailuser')"
+                      >{{ errors.first('emailuser') }}</span>
+                    </div>
+                    <div class="form-group">
+                      <p style="color: red;">{{forget_error}}</p>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn button"
+                      v-if="!disbleforget"
+                      v-on:click="requestActive()"
+                    >Gửi</button>
+                    <button
+                      type="button"
+                      class="btn button"
+                      v-if="disbleforget"
+                      v-on:click="requestActive()"
+                      disabled
+                    >Gửi</button>
+                    <div class="callout">
+                      <span>
+                        Đã có tài khoản?
+                        <a href="#" v-on:click="login()">Đăng nhập</a>
+                      </span>
+                    </div>
+                  </form>
+                </div>
+              </transition>
+              <!-- Start of register account success -->
+
+              <transition name="fade">
+                <div class="content" v-if="activeSuccess">
+                  <h1>Kiểm tra hộp thư để kích hoạt tài khoản, nếu không có xin hãy check hộp thư spam</h1>
+                  <h4>
+                    Nhấn vào
+                    <a v-on:click="login()" style="font-weight:1000">đây</a> để đăng nhập
+                  </h4>
+                  <h6>
+                    <a
+                      v-on:click="activeSuccess = false"
+                      style="font-weight: bold !important; color:blue; cursor: pointer;"
+                    >
+                      Nhấp vào đây
+                      để quay lại
+                    </a>
+                  </h6>
+                </div>
+              </transition>
+              <!-- End of register account success -->
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div v-if="state == 'check'">
+    <div class="main order-md-1">
+      <div class="start" >
+        <div class="container">
+          <div class="col-md-12">
+            <transition name="fade">
+              <div class="content" v-if="checkActive">
+                <h1>
+                  Kích hoạt tài khoản thành công
+                  <i
+                    class="fa fa-check-circle"
+                    aria-hidden="true"
+                    style="color:green"
+                  ></i>
+                </h1>
+                <h4>
+                  Nhấn vào
+                  <a
+                    v-on:click="login()"
+                    style="font-weight:1000; cursor: pointer;"
+                  >đây</a> để đăng nhập
+                </h4>
+              </div>
+            </transition>
+
+            <transition name="fade">
+              <div class="content" v-if="!checkActive">
+                <h1>
+                  Đường link không tồn tại
+                </h1>
+                <h4>
+                  Nhấn vào
+                  <a
+                    v-on:click="login()"
+                    style="font-weight:1000; cursor: pointer;"
+                  >đây</a> để đăng nhập
+                </h4>
+              </div>
+            </transition>            
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+</div>
   <!-- Layout -->
 </template>
 <style>
@@ -209,7 +338,7 @@
 import login_router from "../../Login/router";
 import home_router from "../../Home/router";
 import { TokenService } from "../../../services/storage.service";
-
+import {LibUtils} from "../../../assets/js/LibUtils";
 import VeeValidate from "vee-validate";
 
 export default {
@@ -223,13 +352,22 @@ export default {
         firstname: null,
         lastname: null
       },
-      LOGIN_CONTROLLER: this.$api.getApi() + "/account",
+      REG_CONTROLLER: this.$api.getApi() + "/account",
       reg_error: null,
       disbleReg: false,
-      regSuccess: false
+      regSuccess: false,
+      state: null,
+      checkKey: null,
+      key: null,
+      activeSuccess: false,
+      checkActive: false,
+      key:null
     };
   },
-  mounted() {},
+  mounted() {
+    this.checkState(this.$route);
+    
+  },
   methods: {
     login: function() {
       login_router.push({ name: "index" });
@@ -243,7 +381,7 @@ export default {
           if (res) {
             this.disbleReg = true;
             this.$http
-              .post(this.LOGIN_CONTROLLER + "/register", { user: this.form })
+              .post(this.REG_CONTROLLER + "/register", { user: this.form })
               .then(val => {
                 if (val.data.success) {
                   this.reg_error = null;
@@ -263,7 +401,65 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    }
+    },
+    checkState(path) {
+      console.log(JSON.stringify(path.query));
+      if (
+        Object.keys(path.query).length === 0 &&
+        path.query.constructor === Object
+      ) {
+        this.state = "index";
+      } else if (Object.keys(path.query).length > 0) {
+        if (Object.keys(path.query)[0] == "requestactive") {
+          this.state = "requestactive"
+        }
+        else{
+          this.state = "check";
+          this.key = path.query.key;
+          this.checkkey();
+        }
+        //this.checkkey();
+      } else {
+        this.state = "error";
+      }
+    },
+    forget()
+    {
+
+    },
+    requestActive()
+    {
+        this.$validator
+        .validateAll()
+        .then(res => {
+          if (res) {
+            let email = this.form.email;
+            this.$http
+              .post(this.REG_CONTROLLER + "/RequestActive", {
+                email: email
+              })
+              .then(val => {
+                if (val.data.success) {
+                  this.activeSuccess = true;
+                }
+                else{
+                  LibUtils.callToast("Lỗi", "Email đã được kích hoạt hoặc không tôn tại email này", "error");
+                }
+              });            
+          }
+        })
+    },
+    checkkey() {
+      this.$http
+        .post(this.REG_CONTROLLER + "/ActiveUser", {
+          key: this.key
+        })
+        .then(val => {
+          if (val.data.success) {
+            this.checkActive = true;
+          }
+        });
+    },     
   }
 };
 </script>

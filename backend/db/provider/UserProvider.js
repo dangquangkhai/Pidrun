@@ -98,7 +98,7 @@ class UserProvider {
                     "://" +
                     config.web.host +
                     web_port +
-                    "/activeuser?key=" +
+                    "/register/index?key=" +
                     active.key;
                 let template_html = fs.readFileSync(
                     path.resolve(
@@ -140,55 +140,53 @@ class UserProvider {
                 }
             )
             .then(val => {
-                return {
-                    success: true,
-                    content: val
-                };
+                return val;
             })
             .catch(err => {
-                return {
-                    success: false,
-                    content: err
-                };
+                return null;
             });
-        if (find.content.success) {
-            let max_time = find.content.updated.setMinutes(find.getMinutes() + 30);
-            if (current_dt >= find.content.updated && current_dt <= max_time) {
-                return await Users.findByIdAndUpdate(
-                        find.content.content.UserId, {
+        console.log(find);
+        if (find !== undefined && find !== null) {
+            let max_time = new Date(find.updated);
+            max_time.setMinutes(max_time.getMinutes() + 30);
+            if (current_dt >= find.updated && current_dt <= max_time) {
+                await ActiveUser.deleteOne({ _id: find._id }).then(val => { console.log(val); }).catch(err => { console.log(err) });
+                return await Users.updateOne({
+                            _id: find.UserId
+                        }, {
                             isactive: true
                         },
                         (err, res) => {}
                     )
                     .then(() => {
                         return {
-                            sucess: true,
+                            success: true,
                             content: "Active user success"
                         };
                     })
                     .catch(err => {
                         return {
-                            sucess: false,
-                            content: err
+                            success: false,
+                            content: "Active user not success"
                         };
                     });
             } else {
-                await ActiveUser.findByIdAndDelete(find.content._id, (err, res) => {})
+                return await ActiveUser.findByIdAndDelete(find._id, (err, res) => {})
                     .then(() => {
                         return {
-                            sucess: false,
+                            success: false,
                             content: "Active Time Out"
                         };
                     })
                     .catch(err => {
                         return {
-                            sucess: false,
-                            content: err
+                            success: false,
+                            content: "Error user active"
                         };
                     });
             }
         } else {
-            return await find;
+            return await new Object({ success: false, content: "Not found" });
         }
     }
 
@@ -272,6 +270,13 @@ class UserProvider {
 
     async requestActive(email) {
         let key = generate(50);
+        let usr = await Users.findOne({ email: email }).select("_id email isactive").then(val => { return val }).catch(err => { return null });
+        if (usr === undefined || usr === null) {
+            return await new Object({ success: false, content: "User not found" });
+        }
+        if (usr.isactive) {
+            return await new Object({ success: false, content: "User've already actived" });
+        }
         let find = await ActiveUser.findOneAndUpdate({
                     email: email
                 }, {
@@ -304,7 +309,7 @@ class UserProvider {
                 "://" +
                 config.web.host +
                 web_port +
-                "/activeuser?key=" +
+                "/register/index?key=" +
                 key;
             let _user = await Users.findOne({
                 email: email
@@ -459,6 +464,7 @@ class UserProvider {
                 return { success: false, content: "Something happen" };
             });
     }
+
 
     async forgetPass(key, newPassword) {
         let find = await ForgetPassword.findOne({ key: key })
@@ -736,6 +742,9 @@ try {
     //   console.log(val);
     // });
     // _provider.generateURL().then(val => { console.log(val) });
+    // _provider.activeUser("123").then(val => {
+    //     console.log(val);
+    // });
 } catch (error) {
     console.log(error);
 }

@@ -89,14 +89,15 @@ router.post("/IsLoged", validateUser.validateUser, (req, res) => {
 router.post("/ActiveUser", (req, res) => {
     let key = req.body.key;
     _provider
-        .requestActive(key)
+        .activeUser(key)
         .then(val => {
             return res.json(val);
         })
         .catch(err => {
+            console.log(err);
             return res.json({
                 success: false,
-                content: err
+                content: "Something wrong happen!!"
             });
         });
 });
@@ -137,6 +138,21 @@ router.post("/forgetcheck", (req, res) => {
     let key = req.body.key;
     _provider
         .checkKeyForget(key)
+        .then(val => {
+            return res.json(val);
+        })
+        .catch(err => {
+            return res.json({
+                success: false,
+                content: "Something wrong happen!!!"
+            });
+        });
+});
+
+router.post("/activecheck", (req, res) => {
+    let key = req.body.key;
+    _provider
+        .checkKeyActive(key)
         .then(val => {
             return res.json(val);
         })
