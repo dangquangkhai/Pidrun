@@ -19,7 +19,7 @@
       v-on:sendcall="requestcalling"
       v-if="selectPath !== 'settings'"
     ></Chat>
-    <FormSetting v-if="selectPath === 'settings'" :name="requestSetting" :usrinfo="userinfo"></FormSetting>
+    <FormSetting v-if="selectPath === 'settings'" :name="requestSetting" :usrinfo="userinfo" v-on:reupdateinfo="getUsrInfo"></FormSetting>
     <Call :showcall="requestCall"></Call>
   </div>
 </template>

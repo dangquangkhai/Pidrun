@@ -6,6 +6,12 @@ var fs = require("fs");
 var config = require("../lib/config");
 const path = require("path");
 const utils = require("../lib/utils");
+const multer = require('multer');
+const upload_config = require("../lib/upload");
+const validateUser = require("../lib/auth");
+const jwt = require("jsonwebtoken");
+
+let upload_usr_img = multer({ storage: upload_config.usr_img });
 
 /* GET users listing. */
 router.get("/", function(req, res, next) {
@@ -88,13 +94,19 @@ router.get("/getusrcontact", (req, res, next) => {
     });
 });
 
-router.post("/uploadimage", (req, res, next) => {
-    let image = req.body.image;
-    console.log(req.body);
-    console.log(image);
+router.post("/uploadimage", upload_usr_img.single('image'), (req, res, next) => {
+    let userid = jwt.decode(req.headers["x-access-token"], req.app.get("secretKey")).userId;
+    let file_info = req.file;
+    console.log(file_info);
+    console.log(userid);
+    let image = file_info.path.split(config.getHost("Img_Att"))[1];
+    _provider.updateImage(userid, image).then(val => {
+        return res.json(val)
+    }).catch(err => { return res.json({ success: false, content: "Something wrong!!!" }) });
 });
 
 router.post("/updateinfo", (req, res, next) => {
+
     var userid = req.body.userId;
     var userinfo = req.body.userinfo;
     _provider.updateInfo(userid, userinfo).then(val => {

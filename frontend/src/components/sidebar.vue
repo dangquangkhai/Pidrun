@@ -179,7 +179,7 @@
                                 <div class="data">
                                     <h5>{{generateTitle(item)}}</h5>
                                     <span>{{generateDate(item)}}</span>
-                                    <p>{{generateMess(item)}}</p>
+                                    <p style="word-break: break-all;">{{generateMess(item)}}</p>
                                 </div>
                             </a>
                         </transition-group>
@@ -473,11 +473,11 @@
                             <!-- End of Privacy & Safety -->
                             <!-- Start of Logout -->
                             <div class="category">
-                                <a href="sign-in.html" class="title collapsed">
+                                <a v-on:click="logout()" class="title collapsed">
                                     <i class="material-icons md-30 online">power_settings_new</i>
                                     <div class="data">
-                                        <h5>Power Off</h5>
-                                        <p>Log out of your account</p>
+                                        <h5>Đăng xuất</h5>
+                                        <p>Thoát khỏi tài khoản</p>
                                     </div>
                                     <i class="material-icons">keyboard_arrow_right</i>
                                 </a>
@@ -499,6 +499,7 @@
 <script>
 import Createchat from "@/components/createchat.vue";
 import Addfriend from "@/components/addfriend.vue";
+import { TokenService } from "../services/storage.service";
 var moment = require("moment");
 
 export default {
@@ -738,7 +739,12 @@ export default {
         },
         generateMess(item) {
             let name = item.senderInfo.firstname;
-            let mess = item.mess.message;
+            let mess = "";
+            if (item.mess.message.split("").length > 50) {
+                    mess = item.mess.message.slice(0, 50) + "...";
+            }
+            else
+                mess = item.mess.message;
             return name + ":" + mess;
         },
         generateDate(item) {
@@ -782,6 +788,10 @@ export default {
         },
         openSetting(name){
             this.$emit("opensetting", name);
+        },
+        logout: function() {
+            TokenService.removeToken();
+            location.reload();
         }
     }
 };

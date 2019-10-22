@@ -661,6 +661,18 @@ class UserProvider {
             return { success: false, content: "Your password is not updated" }
         })
     }
+
+    async updateImage(userid, usr_image) {
+        console.log(usr_image);
+        console.log(userid);
+        return await Users.updateOne({ _id: userid }, { image: usr_image }).then(val => {
+            console.log(val);
+            return { success: true, content: "Update success" }
+        }).catch(err => {
+            return { success: false, content: "Update not success" }
+        })
+    }
+
     async generateURL() {
         let lstId = await Users.find().select("_id").then(val => {
                 return val

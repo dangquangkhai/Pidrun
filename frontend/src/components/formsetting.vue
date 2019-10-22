@@ -170,7 +170,7 @@
                   class="btn md-raised md-primary"
                   v-if="!disbleReg"
                   v-on:click="updatePassword()"
-                >Cập nhật thông tin</md-button>
+                >Cập nhật mật khẩu</md-button>
                 <md-button class="md-raised" v-if="disbleReg" disabled>Cập nhật mật khẩu</md-button>
               </form>
             </div>
@@ -183,7 +183,7 @@
 
 <script>
 import moment from "moment";
-import {LibUtils} from "../assets/js/LibUtils"
+import {LibUtils} from "../assets/js/LibUtils";
 export default {
   name: "FormSetting",
   props: ["name", "usrinfo"],
@@ -287,7 +287,15 @@ export default {
             formData.append("image", data);
             _this.$http
               .post(_this.USR_CONTROLLER + "/uploadimage", formData, config)
-              .then(val => {});
+              .then(val => {
+                if (val.data.success) {
+                  LibUtils.callToast("Thành công", "Cập nhật ảnh người dùng thành công");
+                  this.$emit("reupdateinfo");
+                }
+                else{
+                  LibUtils.callToast("Lỗi", "Cập nhật ảnh nguòi dùng không thành công", "error");
+                }
+              });
           });
       });
     },
@@ -396,7 +404,11 @@ export default {
               .then(val => {
                 if (val.data.success) {
                   LibUtils.callToast("Thành công", "Cập nhật thông tin người dùng thành công");
+                  this.$emit("reupdateinfo");
                 }
+                else{
+                  LibUtils.callToast("Lỗi", "Cập nhật  thông tin người dùng không thành công", "error");
+                }                
               });
           }
         })
@@ -489,4 +501,16 @@ export default {
     transform: rotate(360deg);
   }
 }
+
+.img-container {
+  /* Never limit the container height here */
+  max-width: 100%;
+}
+
+.img-container img {
+  /* This is important */
+  width: 100%;
+}
+
+
 </style>

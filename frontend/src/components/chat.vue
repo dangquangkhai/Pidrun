@@ -132,7 +132,7 @@
                     <div class="text-main">
                       <div class="text-group">
                         <div :class="'text ' + generateClass(subItem, subIndex)">
-                          <p>{{subItem.mess.message}}</p>
+                          <p style="word-wrap: break-word;">{{subItem.mess.message}}</p>
                         </div>
                       </div>
                       <span>{{generateTime(subItem, subIndex)}}</span>

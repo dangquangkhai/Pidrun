@@ -639,7 +639,7 @@ class ConversationProvider {
             .then(val => {
                 val.image =
                     val.image !== "" && val.image !== null && val.image !== undefined ?
-                    utils.encodeUrl(val.image) :
+                    utils.encodeUrl(custom_config.getHost("Img_Att") + val.image) :
                     utils.encodeUrl(
                         path.resolve(__dirname, "../../public/images/") +
                         "/default-avatar.jpg"
@@ -671,30 +671,7 @@ class ConversationProvider {
                 listParId.push(item.UserId);
             });
             conversation = new Object(val);
-            switch (conversation.conType) {
-                case "PrivateChat":
-                    let parti = new Object(par[0]);
-                    parti.image =
-                        parti.image !== null &&
-                        parti.image !== undefined &&
-                        parti.image !== "" ?
-                        parti.image :
-                        path.resolve(__dirname, "../../public/images/") +
-                        "/default-avatar.jpg";
-                    conversation.image = utils.encodeUrl(parti.image);
-                    break;
-                case "GroupChat":
-                    conversation.image =
-                        conversation.image !== null &&
-                        conversation.image !== undefined &&
-                        conversation.image !== "" ?
-                        utils.encodeUrl(conversation.image) :
-                        utils.encodeUrl(
-                            path.resolve(__dirname, "../../public/images/") +
-                            "/default-group.png"
-                        );
-                    break;
-            }
+
             mess = await Messsages.findOne({ _id: val.lastMessageId })
                 .then(val => {
                     return val;
@@ -710,7 +687,7 @@ class ConversationProvider {
                         let obj = new Object(item);
                         obj.image =
                             obj.image !== "" && obj.image !== null && obj.image !== undefined ?
-                            utils.encodeUrl(obj.image) :
+                            utils.encodeUrl(custom_config.getHost("Img_Att") + obj.image) :
                             utils.encodeUrl(
                                 path.resolve(__dirname, "../../public/images/") +
                                 "/default-avatar.jpg"
@@ -720,6 +697,31 @@ class ConversationProvider {
                     return arr;
                 });
             console.log(par);
+            switch (conversation.conType) {
+                case "PrivateChat":
+                    let parti = new Object(par[0]);
+                    parti.image =
+                        parti.image !== null &&
+                        parti.image !== undefined &&
+                        parti.image !== "" ?
+                        parti.image :
+                        utils.encodeUrl(path.resolve(__dirname, "../../public/images/") +
+                            "/default-avatar.jpg");
+                    console.log(parti);
+                    conversation.image = parti.image;
+                    break;
+                case "GroupChat":
+                    conversation.image =
+                        conversation.image !== null &&
+                        conversation.image !== undefined &&
+                        conversation.image !== "" ?
+                        utils.encodeUrl(conversation.image) :
+                        utils.encodeUrl(
+                            path.resolve(__dirname, "../../public/images/") +
+                            "/default-group.png"
+                        );
+                    break;
+            }
             let findSender = par.findIndex(item => {
                 return JSON.stringify(UserId) == JSON.stringify(item._id);
             });
